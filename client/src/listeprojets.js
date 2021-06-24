@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card,Container,Row,Image,Col,Table} from "react-bootstrap"
+import { Card,Container,Row,Image,Col,Table,Button} from "react-bootstrap"
 import addicon from './img/add.png';
 import deleteicon from './img/delete.png';
 import updateicon from './img/update.png';
@@ -191,14 +191,11 @@ class listeprojets extends Component {
                 <Col xs={12} md={8}>
                 </Col>
                 <Col xs={6} md={4}>
-                <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Image left onClick={this.ajouter} src={addicon}  rounded /></center> 
-                    <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        Ajouter</h4>
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Button onClick={this.ajouter} variant="primary">Ajouter un projet</Button></center>
                 </Col>
             </Row>
             </Container>
-           
+           <br/><br/>
             <Table responsive >
                 <thead>
                     <tr>

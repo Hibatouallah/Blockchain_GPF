@@ -21,7 +21,8 @@ import Inscriptionclient from "./Inscriptionclient";
 import Detailprojet from "./detailprojet"
 import Ajoutercandidature from "./Ajoutercandidature"
 import ListeCandidature from "./ListeCandidature"
-import Ajouterwishlist from "./Ajouterwishlist"
+import Listeprojetspromoteur from "./Listeprojetspromoteur"
+
 import Listewishlist from "./Listewishlist"
 export default ({ childProps }) =>
   <Switch>
@@ -38,8 +39,8 @@ export default ({ childProps }) =>
     <AppliedRoute path="/ProfilePromoteur" exact component={ProfilePromoteur} props={childProps} />
     <AppliedRoute path="/Ajoutercandidature" exact component={Ajoutercandidature} props={childProps} />
     <AppliedRoute path="/ListeCandidature" exact component={ListeCandidature} props={childProps} />
-    <AppliedRoute path="/Ajouterwishlist" exact component={Ajouterwishlist} props={childProps} />
     <AppliedRoute path="/Listewishlist" exact component={Listewishlist} props={childProps} />
+    <AppliedRoute path="/Listeprojetspromoteur" exact component={Listeprojetspromoteur} props={childProps} />
     { /* routes fonds*/ }
     <AppliedRoute path="/Homefonds" exact component={Homefonds} props={childProps} />
     <AppliedRoute path="/Loginfonds" exact component={Loginfonds} props={childProps} />

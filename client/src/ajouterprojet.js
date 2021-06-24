@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  HelpBlock,
+  Col,
   FormGroup,
   FormControl,
   FormLabel,
@@ -351,9 +351,12 @@ class ajouterprojet extends Component {
                     : null
             }
            
-          <div className="Login">
+           <br/><br/>
+          <h3>Ajouter un projet</h3>
+
             <form enctype =  "multipart/form-data" onSubmit={(e) => this.ajouterprojet(e)}>
-            <FormGroup controlId="reference" bsSize="large">
+            <Form.Row>
+            <FormGroup as={Col} controlId="reference" bsSize="large">
               <FormLabel>Reference</FormLabel>
               <FormControl
                 autoFocus
@@ -362,13 +365,18 @@ class ajouterprojet extends Component {
                 onChange={(e) => this.setState({reference: e.target.value})}
               />
             </FormGroup>
-            <FormGroup controlId="image" bsSize="large">
+            <FormGroup as={Col} controlId="image" bsSize="large">
               <FormLabel>Image principale</FormLabel>
-              <input type="file" name="image" onChange={this.onChangeHandlerimage}/>
-             
+              <FormControl
+                autoFocus
+                type="file"
+                name="image"
+                onChange={this.onChangeHandlerimage}
+              />
             </FormGroup>
-
-            <FormGroup controlId="imagesec1" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="imagesec1" bsSize="large">
               <FormLabel>Image detail 1</FormLabel>
               <FormControl
                 autoFocus
@@ -376,7 +384,7 @@ class ajouterprojet extends Component {
                 onChange={this.onChangeHandlerimagesec1}
               />
             </FormGroup>
-            <FormGroup controlId="imagesec2" bsSize="large">
+            <FormGroup as={Col} controlId="imagesec2" bsSize="large">
               <FormLabel>Image detail 2</FormLabel>
               <FormControl
                 autoFocus
@@ -384,7 +392,9 @@ class ajouterprojet extends Component {
                 onChange={this.onChangeHandlerimagesec2}
               />
             </FormGroup>
-            <FormGroup controlId="imagesec3" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="imagesec3" bsSize="large">
               <FormLabel>Image detail 3</FormLabel>
               <FormControl
                 autoFocus
@@ -392,7 +402,7 @@ class ajouterprojet extends Component {
                 onChange={this.onChangeHandlerimagesec3}
               />
             </FormGroup>
-            <FormGroup controlId="cout_estimation_travaux" bsSize="large">
+            <FormGroup as={Col} controlId="cout_estimation_travaux" bsSize="large">
               <FormLabel>Cout d'estimation des travaux</FormLabel>
               <FormControl
                 value={this.state.cout_estimation_travaux}
@@ -400,7 +410,9 @@ class ajouterprojet extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="nb_client" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="nb_client" bsSize="large">
               <FormLabel>Nombre de client</FormLabel>
               <FormControl
                 value={this.state.nb_client}
@@ -408,7 +420,7 @@ class ajouterprojet extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="delai_execution" bsSize="large">
+            <FormGroup as={Col} controlId="delai_execution" bsSize="large">
               <FormLabel>Delai d'execution</FormLabel>
               <FormControl
                 value={this.state.delai_execution}
@@ -416,7 +428,9 @@ class ajouterprojet extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="montant_caution_provisoire" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="montant_caution_provisoire" bsSize="large">
               <FormLabel>Montant de la caution provisoire</FormLabel>
               <FormControl
                 value={this.state.montant_caution_provisoire}
@@ -425,7 +439,7 @@ class ajouterprojet extends Component {
               />
             </FormGroup>
 
-            <FormGroup controlId="duree_validite_offre" bsSize="large">
+            <FormGroup as={Col} controlId="duree_validite_offre" bsSize="large">
               <FormLabel>Duree de validite d'offre</FormLabel>
               <FormControl
                 value={this.state.duree_validite_offre}
@@ -433,7 +447,9 @@ class ajouterprojet extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="mesures_securites_hygiene" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="mesures_securites_hygiene" bsSize="large">
               <FormLabel>Mesures des securites d'hygiene</FormLabel>
               <FormControl
                 
@@ -441,7 +457,7 @@ class ajouterprojet extends Component {
                 type="file"
               />
             </FormGroup>
-            <FormGroup controlId="reception_provisoire_travaux" bsSize="large">
+            <FormGroup as={Col} controlId="reception_provisoire_travaux" bsSize="large">
               <FormLabel>Reception provisoire des travaux</FormLabel>
               <FormControl
                 value={this.state.reception_provisoire_travaux}
@@ -449,21 +465,25 @@ class ajouterprojet extends Component {
                 type="date"
               />
             </FormGroup>
-            <FormGroup controlId="cahier_prestations_techniques" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="cahier_prestations_techniques" bsSize="large">
               <FormLabel>Cahier des prestations techniques</FormLabel>
               <FormControl
                 onChange={this.onChangeHandlercahier_prestations_techniques}
                 type="file"
               />
             </FormGroup>
-            <FormGroup controlId="normes_mise_en_oeuvre" bsSize="large">
+            <FormGroup as={Col} controlId="normes_mise_en_oeuvre" bsSize="large">
               <FormLabel>Normes des mise en oeuvre</FormLabel>
               <FormControl
                onChange={this.onChangeHandlernormes_mise_en_oeuvre}
                 type="file"
               />
             </FormGroup>
-            <FormGroup controlId="localisation" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="localisation" bsSize="large">
               <FormLabel>Localisation</FormLabel>
               <FormControl
                 value={this.state.localisation}
@@ -473,7 +493,7 @@ class ajouterprojet extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="descriptif" bsSize="large">
+            <FormGroup as={Col} controlId="descriptif" bsSize="large">
               <FormLabel>Descriptif</FormLabel>
               <FormControl
                 value={this.state.descriptif}
@@ -483,7 +503,9 @@ class ajouterprojet extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="superficier" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="superficier" bsSize="large">
               <FormLabel>Superficier</FormLabel>
               <FormControl
                 value={this.state.superficier}
@@ -491,7 +513,7 @@ class ajouterprojet extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="type_projet" bsSize="large">
+            <FormGroup as={Col} controlId="type_projet" bsSize="large">
               <FormLabel>Type de projet</FormLabel>
               <FormControl
                 value={this.state.type_projet}
@@ -499,7 +521,9 @@ class ajouterprojet extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="nb_chambre" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="nb_chambre" bsSize="large">
               <FormLabel>Nombre de chambre</FormLabel>
               <FormControl
                 value={this.state.nb_chambre}
@@ -507,7 +531,7 @@ class ajouterprojet extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="etage" bsSize="large">
+            <FormGroup as={Col} controlId="etage" bsSize="large">
               <FormLabel>nombre etage:</FormLabel>
               <FormControl
                 value={this.state.etage}
@@ -515,6 +539,8 @@ class ajouterprojet extends Component {
                 type="number"
               />
             </FormGroup>
+            </Form.Row>
+            <Form.Row>
               {['checkbox'].map((type) => (
               <div key={`default-${type}`} className="mb-3">
               <Form.Check 
@@ -583,16 +609,18 @@ class ajouterprojet extends Component {
               />
               </div>
               ))}
-              <LoaderButton
+              </Form.Row>
+              <Button
               block
               bsSize="large"
               disabled={!this.validateForm()}
               text="Ajouter"
               type="submit"
-              />
-              <br/>
+              variant = "primary"
+              >Ajouter</Button>
+              
               </form>
-          </div>
+            
         </div>);
     }
 }

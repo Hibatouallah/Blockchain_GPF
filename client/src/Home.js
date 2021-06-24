@@ -5,8 +5,7 @@ import {getEthereum} from "./getEthereum"
 import { Card, Button,Container,Row,Col,ListGroup,ListGroupItem} from 'react-bootstrap';
 import { LinkContainer } from "react-router-bootstrap";
 import promoteuricon from './img/promoteuricon.png';
-import img1 from './img/1.jfif';
-
+import Slider from "./components/Slider";
 
 class Home extends Component {
   state = {
@@ -113,12 +112,15 @@ moredetails = (ref) => {
   this.props.history.push("/detailprojet"); 
 }
  
-    render() {   
+    render() { 
+    
         return ( 
-            <div className="Login">
-
+            <>
+        <Slider />
         <Container>
+        
           <Row>
+          
           {this.state.listeprojet.map((list) =>
      
           <Col  md={4}>
@@ -149,7 +151,7 @@ moredetails = (ref) => {
           
           
           
-        </div>
+        </>
        )
     }
 }

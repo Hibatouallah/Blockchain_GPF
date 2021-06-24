@@ -6,11 +6,15 @@
 
 nextpromoteurindex : uint256 
 nextcandidatureindex : uint256
+nextwishlistindex : uint256
 @external
 def __init__():
     self.nextpromoteurindex = 0
     self.nextcandidatureindex = 0
+    self.nextwishlistindex = 0
+
 struct Promoteur_info:
+    photo: String[200]
     nom_prenom : String[100]
     activite : String[200]
     identifiant_commun_entreprise: uint256
@@ -37,10 +41,23 @@ struct Candidature:
     modele_acte_engagement : String[200]
     modele_declaration_honneur : String[200]
 
+struct Wishlist:
+    accountpromoteur : address
+    reference : String[200]
+    dateajout : String[15]
 
-
+mywishlist : public(HashMap[uint256,Wishlist])
 mescandidatures : public(HashMap[uint256,Candidature])
 promoteurs: public(HashMap[uint256,Promoteur_info])
+
+
+@external
+def ajouterwishlist(_reference : String[200],_accountpromoteur : address,_dateajout: String[15]):
+    self.mywishlist[self.nextwishlistindex] = Wishlist({
+        accountpromoteur :_accountpromoteur,
+        reference : _reference ,
+        dateajout:_dateajout})
+    self.nextwishlistindex = self.nextwishlistindex +1
 
 @external
 def ajoutercandidature(_reference : String[200],_accountpromoteur : address,_cahier_prestation_speciale: String[200],_bordereau_prix_detail_estimatif : String[200],_present_reglement_consultation : String[200],_modele_acte_engagement : String[200],_modele_declaration_honneur : String[200]):
@@ -67,9 +84,10 @@ def modifiercandidature(_nb:uint256,_reference : String[200],_accountpromoteur :
         modele_declaration_honneur : _modele_declaration_honneur})
 
 @external
-def inscription(_nom_prenom : String[100],_activite : String[200],_identifiant_commun_entreprise : uint256,_identifiant_fiscal :uint256,_numero_rc:uint256,_adresse : String[1000],_email:String[100], _password:String[100], _walletAddress:address):
+def inscription(_photo: String[200],_nom_prenom : String[100],_activite : String[200],_identifiant_commun_entreprise : uint256,_identifiant_fiscal :uint256,_numero_rc:uint256,_adresse : String[1000],_email:String[100], _password:String[100], _walletAddress:address):
 
     self.promoteurs[self.nextpromoteurindex] = Promoteur_info({
+        photo: _photo,
         nom_prenom :_nom_prenom,
         activite:_activite,
         identifiant_commun_entreprise:_identifiant_commun_entreprise,
@@ -101,6 +119,10 @@ def authentification(_nb:uint256,_email:String[100], _password:String[100]) -> S
         res = "invalide email"
     return res
 
+
+@external
+def listewishlist() -> uint256 :
+    return self.nextwishlistindex
 @external
 def listepromoteur() -> uint256 :
     return self.nextpromoteurindex
@@ -113,7 +135,9 @@ def getassurance_accident_travail(nb:uint256)->String[100]:
 @external
 def getassurance_rique_chantier(nb:uint256)->String[100]:
     return self.promoteurs[nb].assurance_rique_chantier
-
+@external
+def getphoto(nb:uint256)->String[200]:
+    return self.promoteurs[nb].photo
 @external
 def getassurances_responsabilites_civile(nb:uint256)->String[100]:
     return self.promoteurs[nb].assurances_responsabilites_civile
@@ -191,3 +215,12 @@ def getmodele_declaration_honneur(nb:uint256)->String[200]:
 @external
 def getreference(nb:uint256)->String[200]:
     return self.mescandidatures[nb].reference
+
+@external
+def getreferencewishlist(nb:uint256)->String[200]:
+    return self.mywishlist[nb].reference
+
+@external
+def getdateajout(nb:uint256)->String[15]:
+    return self.mywishlist[nb].dateajout
+    

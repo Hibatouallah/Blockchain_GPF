@@ -24,6 +24,7 @@
     "react-client-session": "0.0.7",
     "react-dom": "^16.13.1",
     "react-file-upload": "0.0.4",
+    "react-icons": "^4.2.0",
     "react-images-upload": "^1.2.8",
     "react-native": "^0.64.2",
     "react-phone-input-2": "^2.14.0",

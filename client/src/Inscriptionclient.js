@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
-  HelpBlock,
+  Form,
+  Col,
   FormGroup,
   FormControl,
   FormLabel
@@ -108,8 +109,9 @@ class Inscriptionclient extends Component {
       renderForm() {
         return (
             <form onSubmit={(e) => this.InscriptionClient(e)}>
-                <h3>S'inscrire</h3>
-            <FormGroup controlId="nom_prenom" bsSize="large">
+              
+          <Form.Row>
+            <FormGroup as={Col}  controlId="nom_prenom" bsSize="large">
               <FormLabel>Votre nom complet</FormLabel>
               <FormControl
                 autoFocus
@@ -119,7 +121,7 @@ class Inscriptionclient extends Component {
               
               />
             </FormGroup>
-            <FormGroup controlId="cin" bsSize="large">
+            <FormGroup as={Col}  controlId="cin" bsSize="large">
               <FormLabel>Votre Cin</FormLabel>
               <FormControl
                 value={this.state.cin}
@@ -127,7 +129,9 @@ class Inscriptionclient extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="date_naissance" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col}  controlId="date_naissance" bsSize="large">
               <FormLabel>Votre Date de Naissance</FormLabel>
               <FormControl
                 value={this.state.date_naissance}
@@ -135,7 +139,7 @@ class Inscriptionclient extends Component {
                 type="date"
               />
             </FormGroup>
-            <FormGroup controlId="numtele" bsSize="large">
+            <FormGroup as={Col}  controlId="numtele" bsSize="large">
               <FormLabel>Votre Numero de telephone</FormLabel>
               <ReactPhoneInput
                 inputExtraProps={{
@@ -148,7 +152,9 @@ class Inscriptionclient extends Component {
                 onChange={this.handleOnChangetel}
                 />
             </FormGroup>
-            <FormGroup controlId="adresse" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col}  controlId="adresse" bsSize="large">
               <FormLabel>Votre Adresse</FormLabel>
               <FormControl
                 value={this.state.adresse}
@@ -156,7 +162,7 @@ class Inscriptionclient extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="email" bsSize="large">
+            <FormGroup as={Col} controlId="email" bsSize="large">
               <FormLabel>Votre email</FormLabel>
               <FormControl
                 value={this.state.email}
@@ -164,8 +170,9 @@ class Inscriptionclient extends Component {
                 type="email"
               />
             </FormGroup>
-            
-            <FormGroup controlId="password" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col}  controlId="password" bsSize="large">
             <FormLabel>votre Mot de passe</FormLabel>
             <FormControl
                 value={this.state.password}
@@ -173,7 +180,7 @@ class Inscriptionclient extends Component {
                 type="password"
             />
             </FormGroup>
-            <FormGroup controlId="passwordconfirmation" bsSize="large">
+            <FormGroup as={Col}  controlId="passwordconfirmation" bsSize="large">
             <FormLabel>Mot de passe confirmation</FormLabel>
             <FormControl
                 value={this.state.passwordconfirmation}
@@ -181,6 +188,7 @@ class Inscriptionclient extends Component {
                 type="password"
             />
             </FormGroup>
+            </Form.Row>
             <LoaderButton
               block
               bsSize="large"
@@ -298,7 +306,8 @@ class Inscriptionclient extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="container">
-          
+          <br/><br/>
+          <h3>S'inscrire</h3>
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -306,12 +315,11 @@ class Inscriptionclient extends Component {
                     </p>
                     : null
             }
-            
-            <div className="Signup">
+         
                 {this.state.newUser === null
                 ? this.renderForm()
                 : this.renderConfirmationForm()}
-            </div>
+       
         </div>)
     }
 }

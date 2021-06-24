@@ -120,10 +120,7 @@ class Loginfonds extends Component {
         var result = await fonds.methods.authentification(_email, _password,accounts[0]).call()
     
         if(result == "welcome"){
-            //this.setState({ isAuthenticated: true });
-            localStorage.setItem('isAuthenticated', 'true');
-            localStorage.setItem('userfonds', 'true');
-            //this.props.userHasAuthenticated(true);
+
             this.props.history.push("/Homefonds");
         }
         else {

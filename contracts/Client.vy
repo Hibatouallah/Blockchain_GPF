@@ -4,6 +4,7 @@
 
 #Informations sur le client
 struct Client_info:
+    photo:String[200]
     nom_prenom : String[100]
     cin : String[20]
     date_naissance : String[30]
@@ -25,9 +26,10 @@ def __init__():
 clients: public(HashMap[address,Client_info])
 
 @external
-def inscription(_nom_prenom : String[100],_cin : String[20],_date_naissance : String[30],_numtele : String [60],_adresse : String[1000],_email:String[100], _password:String[100], _walletAddress:address):
+def inscription(_photo:String[200],_nom_prenom : String[100],_cin : String[20],_date_naissance : String[30],_numtele : String [60],_adresse : String[1000],_email:String[100], _password:String[100], _walletAddress:address):
 
     self.clients[_walletAddress] = Client_info({
+        photo: _photo,
         nom_prenom : _nom_prenom,
         cin :  _cin,
         date_naissance : _date_naissance,
@@ -51,4 +53,7 @@ def authentification(_email:String[100], _password:String[100],_account:address)
         else:
             res = "invalide email ou mot de passe"
     return res
-    
+
+@external
+def listeclient() -> uint256 :
+    return self.nextclientindex

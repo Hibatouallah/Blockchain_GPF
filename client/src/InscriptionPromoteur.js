@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import {
   HelpBlock,
+  Form,
+  Col,
   FormGroup,
   FormControl,
-  FormLabel
+  FormLabel,
+  Button
 } from "react-bootstrap";
 import LoaderButton from "./containers/LoaderButton";
 import "./containers/Signup.css";
@@ -11,6 +14,7 @@ import "./containers/Signup.css";
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+
 
 class InscriptionPromoteur extends Component {
 
@@ -102,9 +106,10 @@ class InscriptionPromoteur extends Component {
       }
       renderForm() {
         return (
-         
+          
             <form onSubmit={(e) => this.InscriptionPromoteur(e)}>
-            <FormGroup controlId="nom_prenom" bsSize="large">
+            <Form.Row>
+            <FormGroup as={Col} controlId="nom_prenom" bsSize="large">
               <FormLabel>Votre nom complet</FormLabel>
               <FormControl
                 autoFocus
@@ -114,7 +119,7 @@ class InscriptionPromoteur extends Component {
               
               /> 
             </FormGroup>
-            <FormGroup controlId="activite" bsSize="large">
+            <FormGroup as={Col} controlId="activite" bsSize="large">
               <FormLabel>Votre activité</FormLabel>
               <FormControl
                 value={this.state.activite}
@@ -122,7 +127,9 @@ class InscriptionPromoteur extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="identifiant_commun_entreprise" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="identifiant_commun_entreprise" bsSize="large">
               <FormLabel>Votre identifiant commun d'entreprise</FormLabel>
               <FormControl
                 value={this.state.identifiant_commun_entreprise}
@@ -130,7 +137,7 @@ class InscriptionPromoteur extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="identifiant_fiscal" bsSize="large">
+            <FormGroup as={Col} controlId="identifiant_fiscal" bsSize="large">
               <FormLabel>Votre identifiant fiscal</FormLabel>
               <FormControl
                 value={this.state.identifiant_fiscal}
@@ -138,7 +145,9 @@ class InscriptionPromoteur extends Component {
                 type="number"
               />
             </FormGroup>
-            <FormGroup controlId="numero_rc" bsSize="large">
+            </Form.Row>
+            <Form.Row>
+            <FormGroup as={Col} controlId="numero_rc" bsSize="large">
               <FormLabel>Votre numéro RC</FormLabel>
               <FormControl
                 value={this.state.numero_rc}
@@ -146,6 +155,15 @@ class InscriptionPromoteur extends Component {
                 type="number"
               />
             </FormGroup>
+            <FormGroup as={Col} controlId="email" bsSize="large">
+              <FormLabel>Votre email</FormLabel>
+              <FormControl
+                value={this.state.email}
+                onChange={(e) => this.setState({email: e.target.value})}
+                type="email"
+              />
+            </FormGroup>
+            </Form.Row>
             <FormGroup controlId="adresse" bsSize="large">
               <FormLabel>Votre Adresse</FormLabel>
               <FormControl
@@ -154,16 +172,8 @@ class InscriptionPromoteur extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup controlId="email" bsSize="large">
-              <FormLabel>Votre email</FormLabel>
-              <FormControl
-                value={this.state.email}
-                onChange={(e) => this.setState({email: e.target.value})}
-                type="email"
-              />
-            </FormGroup>
-           
-            <FormGroup controlId="password" bsSize="large">
+            <Form.Row>
+            <FormGroup as={Col} controlId="password" bsSize="large">
             <FormLabel>votre Mot de passe</FormLabel>
             <FormControl
                 value={this.state.password}
@@ -171,7 +181,7 @@ class InscriptionPromoteur extends Component {
                 type="password"
             />
             </FormGroup>
-            <FormGroup controlId="passwordconfirmation" bsSize="large">
+            <FormGroup as={Col} controlId="passwordconfirmation" bsSize="large">
             <FormLabel>Mot de passe confirmation</FormLabel>
             <FormControl
                 value={this.state.passwordconfirmation}
@@ -179,16 +189,19 @@ class InscriptionPromoteur extends Component {
                 type="password"
             />
             </FormGroup>
-            <LoaderButton
+            </Form.Row>
+            <Button 
               block
               bsSize="large"
               disabled={!this.validateForm()}
               type="submit"
-              isLoading={this.state.isLoading}
-              text="Signup"
-              loadingText="Signing up…"
-            />
+              className="classbtn"
+              variant = "primary"
+            >S'inscrire</Button>
+            <br/><br/>
           </form>
+    
+
         );
       }    
     componentDidMount = async () => {
@@ -275,7 +288,7 @@ class InscriptionPromoteur extends Component {
         
 
         var result = await promoteur.methods.inscription(_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
-        this.props.history.push("/");  
+        this.props.history.push("/Loginpromoteur");  
     }
 
     render() {
@@ -298,7 +311,8 @@ class InscriptionPromoteur extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="container">
-          
+          <br/><br/>
+          <h3>S'inscrire</h3>
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -306,12 +320,12 @@ class InscriptionPromoteur extends Component {
                     </p>
                     : null
             }
-            
-            <div className="Signup">
+         
                 {this.state.newUser === null
                 ? this.renderForm()
                 : this.renderConfirmationForm()}
-            </div>
+       
+         
         </div>)
     }
 }

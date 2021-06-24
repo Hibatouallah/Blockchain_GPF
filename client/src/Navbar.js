@@ -1,30 +1,19 @@
-
-import Routes from "./Routes";
-import { Link, withRouter } from "react-router-dom";
-
-import { LinkContainer } from "react-router-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "./App.css";
-import { Auth } from "aws-amplify";
-
+import React,{Component,Fragment} from 'react';
 import {
   Nav,
-  NavLink,
+  Navlink,
   Bars,
   NavMenu,
   NavBtn,
   NavBtnLink
 } from './NavbarElements';
-import React, { Component, Fragment , useState } from "react";
+
 
 import {getWeb3} from "./getWeb3"
 import {getEthereum} from "./getEthereum"
-import { combineReducers } from 'redux';
 
 
-class App extends Component {
-
- 
+class Navbar extends Component {
     state = {
         isAuthenticated: false,
         isAuthenticating: true,
@@ -74,31 +63,21 @@ class App extends Component {
             chainid
         }, await this.loadInitialContracts)
       
-        localStorage.setItem('nouser',this.state.nouser);
-        alert(localStorage.getItem('isAuthenticated'))
-        if(localStorage.getItem('userpromo') === 'true' || localStorage.getItem('userfonds') === 'true'){
-          alert(localStorage.getItem('userpromo'))
-          alert(localStorage.getItem('userfonds'))
-          this.state.nouser = false
-          localStorage.setItem('nouser',this.state.nouser);
-        } 
+      
         this.setState({ isAuthenticating: false });
-        
-        console.log(typeof(this.state.accounts[0]))
 
     }
 
     render() {
-
+      this.setState({ isAuthenticating: false });
         const childProps = {
             isAuthenticatedPromo: this.state.isAuthenticatedPromo,
             userHasAuthenticated: this.userHasAuthenticated
           };
-
-        return (
-            !this.state.isAuthenticating &&
+  return (
+    !this.state.isAuthenticating &&
     <>
-        <Nav>
+      <Nav>
         <NavLink to='/'>
           <img src={require('./img/logo.png')} alt='logo' />
         </NavLink>
@@ -115,9 +94,6 @@ class App extends Component {
                 <NavLink to="/Listewishlist" activeStyle>
                     Mon Panier
                 </NavLink>
-                <NavLink to="/Listeprojetspromoteur" activeStyle>
-                    Mes projets
-                </NavLink>
                 <NavLink onClick={this.handleLogout} activeStyle>
                     Se Déconnecter
                 </NavLink>
@@ -131,19 +107,13 @@ class App extends Component {
                 </NavLink> 
           </Fragment>
           }
-           { this.state.accounts  == "0xdb49fb381F46b3A6078Fec43f0F5A0695a6C715E" &&
-                  <NavLink to='/listeprojets' activeStyle>
-                    Mes Projets
-                  </NavLink>
-            }
         </NavMenu>
     
     
       </Nav>
-      <Routes childProps={childProps} />
     </>
   );
-    }
+};
 }
 
-export default withRouter(App);
+export default Navbar;

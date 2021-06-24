@@ -250,8 +250,23 @@ loadContract = async (chain, contractName) => {
     localStorage.setItem('refprojet', this.state.references);
     this.props.history.push("/Ajoutercandidature");
   }
-  handleChangewishlist = ()=>{
-    this.props.history.push("/Ajouterwishlist");
+  handleChangewishlist = async (e)=>{
+    const {accounts,fonds,promoteur} = this.state
+    e.preventDefault()
+      var nb =  await fonds.methods.listewishlist().call()
+      for (var i=0; i < nb; i++) {
+        const ref = await fonds.methods.getreferencewishlist(i).call()
+        if(ref != localStorage.getItem('refdetails'))
+        {
+          let newDate = new Date()
+          let date = newDate.getDate();
+          var result = await promoteur.methods.ajouterwishlist(ref,accounts[0],date).call()
+          alert("projet est ajouté à wishlist")
+          this.props.history.push("/Listewishlist");
+        }
+      }
+    
+
   }
     render() {   
 
