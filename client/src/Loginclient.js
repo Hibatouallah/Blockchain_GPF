@@ -17,7 +17,8 @@ class Loginclient extends Component {
         client : null,
         email: "",
         password: "",
-        isLoading: false
+        isLoading: false,
+        nbclient:0
     }
 
     componentDidMount = async () => {
@@ -117,17 +118,27 @@ class Loginclient extends Component {
             return
         }
        
-        var result = await client.methods.authentification(_email, _password,accounts[0]).call()
-    
-        if(result == "welcome"){
-            //this.setState({ isAuthenticated: true });
-            localStorage.setItem('isAuthenticated', 'true');
-            //this.props.userHasAuthenticated(true);
-            this.props.history.push("/Homeclient");
-        }
-        else {
-            alert (result)
-            this.setState({ isLoading: false });
+        var nb =  await client.methods.listeclient().call()
+     
+        this.setState({nbclient:nb})
+        for (var i=0; i < nb; i++) {
+          const wallet = await client.methods.getwalletAddress(i).call()
+          if(wallet == accounts[0])
+          {
+                var result = await client.methods.authentification(i,_email,_password).call()
+                if(result == "welcome"){
+                    alert (result)
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('isclient', 'true');
+                    this.props.history.push("/");
+                }
+                else {
+                    alert (result)
+                    this.setState({ isLoading: false });
+                }
+          }else{
+            alert (wallet+"invalide account"+accounts)
+          }
         }
         
     }

@@ -1,41 +1,43 @@
 import First from "../img/2.png";
 import Second from "../img/3.png";
 import Third from "../img/4.jpg";
-
+import Fourth from "../img/7.png";
+import Fifth from "../img/8.png";
+import Sixth from "../img/9.png";
 export default [
   {
-    title: "First Slide",
-    description: "This is the first slider Image of our carousel",
+    title: "ImmobiTech",
+    description: "",
     urls: First,
   },
   {
-    title: "Second Slide",
-    description: "This is the second slider Image of our carousel",
+    title: "ImmobiTech",
+    description: "",
     urls: Second,
   },
   {
-    title: "Third Slide",
-    description: "This is the Third slider Image of our carousel",
+    title: "ImmobiTech",
+    description: "",
     urls: Third,
   },
   {
-    title: "Fourth Slide",
-    description: "This is the Fourth slider Image of our carousel",
-    urls: "https://mdbootstrap.com/img/Photos/Slides/img%20(133).jpg",
+    title: "ImmobiTech",
+    description: "",
+    urls: Fourth,
   },
   {
-    title: "Fifth Slide",
-    description: "This is the Fifth slider Image of our carousel",
-    urls: "https://mdbootstrap.com/img/Photos/Slides/img%20(147).jpg",
+    title: "ImmobiTech",
+    description: "",
+    urls: Fifth,
   },
   {
-    title: "Sixth Slide",
-    description: "This is the Sixth slider Image of our carousel",
-    urls: "https://mdbootstrap.com/img/Photos/Slides/img%20(105).jpg",
+    title: "ImmobiTech",
+    description: "",
+    urls: Sixth,
   },
   {
-    title: "Seventh Slide",
-    description: "This is the Seventh slider Image of our carousel",
+    title: "ImmobiTech",
+    description: "",
     urls: "https://mdbootstrap.com/img/Photos/Slides/img%20(102).jpg",
   },
 ];

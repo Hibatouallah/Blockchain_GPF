@@ -126,23 +126,20 @@ moredetails = (ref) => {
           <Col  md={4}>
 
           <Card style={{ width: '18rem' }}>
-              <Card.Img variant="top" src={list[0].image} />
+              <Card.Img variant="top" fluid  src={list[0].image} />
               <Card.Body>
-                <Card.Title>Ref:{list[0].references}</Card.Title>
+                <Card.Title>{list[0].references}</Card.Title>
                 <Card.Text>
+                <p><b>Localisation:</b>{list[0].localisation}</p>
+               <p><b>Type du projet :</b>{list[0].type_projet}</p>
                 </Card.Text>
               </Card.Body>
-              <ListGroup className="list-group-flush">
-                <ListGroupItem>Cout estimé :{list[0].couts_estimation_travaux}</ListGroupItem>
-                <ListGroupItem>Localisation:{list[0].localisation}</ListGroupItem>
-                <ListGroupItem>Type du projet :{list[0].type_projet}</ListGroupItem>
-              </ListGroup>
               <Card.Body>
-
               <Button variant="dark" onClick={() => this.moredetails(list[0].references)}>Plus de detail</Button>
-              
               </Card.Body>
-            </Card>    
+            </Card>  
+         
+    
           </Col>
 
           )}

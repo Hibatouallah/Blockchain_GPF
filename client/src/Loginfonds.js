@@ -120,8 +120,9 @@ class Loginfonds extends Component {
         var result = await fonds.methods.authentification(_email, _password,accounts[0]).call()
     
         if(result == "welcome"){
-
-            this.props.history.push("/Homefonds");
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isfonds', 'true');
+            this.props.history.push("/");
         }
         else {
             alert ("invalide email ou mot de passe")

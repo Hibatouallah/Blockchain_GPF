@@ -22,8 +22,10 @@ import Detailprojet from "./detailprojet"
 import Ajoutercandidature from "./Ajoutercandidature"
 import ListeCandidature from "./ListeCandidature"
 import Listeprojetspromoteur from "./Listeprojetspromoteur"
-
 import Listewishlist from "./Listewishlist"
+import Ajouterwishlist from "./Ajouterwishlist"
+import Profileclient from "./Profileclient"
+import Listewishlistclient from "./Listewishlistclient"
 export default ({ childProps }) =>
   <Switch>
     { /* routes */ }
@@ -41,6 +43,7 @@ export default ({ childProps }) =>
     <AppliedRoute path="/ListeCandidature" exact component={ListeCandidature} props={childProps} />
     <AppliedRoute path="/Listewishlist" exact component={Listewishlist} props={childProps} />
     <AppliedRoute path="/Listeprojetspromoteur" exact component={Listeprojetspromoteur} props={childProps} />
+    <AppliedRoute path="/Ajouterwishlist" exact component={Ajouterwishlist} props={childProps} />
     { /* routes fonds*/ }
     <AppliedRoute path="/Homefonds" exact component={Homefonds} props={childProps} />
     <AppliedRoute path="/Loginfonds" exact component={Loginfonds} props={childProps} />
@@ -53,8 +56,8 @@ export default ({ childProps }) =>
     { /* routes client*/ }
     <AppliedRoute path="/Loginclient" exact component={Loginclient} props={childProps} />
     <AppliedRoute path="/Inscriptionclient" exact component={Inscriptionclient} props={childProps} />
-
-
+    <AppliedRoute path="/Profileclient" exact component={Profileclient} props={childProps} />
+    <AppliedRoute path="/Listewishlistclient" exact component={Listewishlistclient} props={childProps} />
     
     { /* Finally, catch all unmatched routes */ }
     <Route component={NotFound} />

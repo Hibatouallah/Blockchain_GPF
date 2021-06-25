@@ -14,6 +14,7 @@ import "./containers/Signup.css";
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+import axios from 'axios';
 
 
 class InscriptionPromoteur extends Component {
@@ -24,6 +25,7 @@ class InscriptionPromoteur extends Component {
         this.state = {
           isLoading: false,
           nom_prenom: "",
+          image:null,
           activite: "",
           identifiant_commun_entreprise: 0,
           identifiant_fiscal: 0,
@@ -108,6 +110,7 @@ class InscriptionPromoteur extends Component {
         return (
           
             <form onSubmit={(e) => this.InscriptionPromoteur(e)}>
+            
             <Form.Row>
             <FormGroup as={Col} controlId="nom_prenom" bsSize="large">
               <FormLabel>Votre nom complet</FormLabel>
@@ -164,7 +167,8 @@ class InscriptionPromoteur extends Component {
               />
             </FormGroup>
             </Form.Row>
-            <FormGroup controlId="adresse" bsSize="large">
+            <Form.Row>
+            <FormGroup as={Col} controlId="adresse" bsSize="large">
               <FormLabel>Votre Adresse</FormLabel>
               <FormControl
                 value={this.state.adresse}
@@ -172,6 +176,16 @@ class InscriptionPromoteur extends Component {
                 type="text"
               />
             </FormGroup>
+            <FormGroup as={Col} controlId="image" bsSize="large">
+              <FormLabel>Image principale</FormLabel>
+              <FormControl
+                autoFocus
+                type="file"
+                name="image"
+                onChange={this.onChangeHandlerimage}
+              />
+            </FormGroup>
+            </Form.Row>
             <Form.Row>
             <FormGroup as={Col} controlId="password" bsSize="large">
             <FormLabel>votre Mot de passe</FormLabel>
@@ -195,7 +209,6 @@ class InscriptionPromoteur extends Component {
               bsSize="large"
               disabled={!this.validateForm()}
               type="submit"
-              className="classbtn"
               variant = "primary"
             >S'inscrire</Button>
             <br/><br/>
@@ -272,11 +285,25 @@ class InscriptionPromoteur extends Component {
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
+    onChangeHandlerimage=event=>{
+      this.setState({
+        image: event.target.files[0],
+        loaded: 0,
+      })
+    }
 
     InscriptionPromoteur = async (e) => {
-        const {accounts,promoteur,nom_prenom,activite,identifiant_commun_entreprise,identifiant_fiscal,numero_rc,adresse,email,password} = this.state
+        const {accounts,promoteur,image,nom_prenom,activite,identifiant_commun_entreprise,identifiant_fiscal,numero_rc,adresse,email,password} = this.state
         e.preventDefault()
-        
+        const data2 = new FormData()
+        data2.append('file', this.state.image)
+        axios.post("http://localhost:8000/upload", data2, { 
+            // receive two    parameter endpoint url ,form data
+          })
+        .then(res => { // then print response status
+            console.log(res.statusText)
+        })
+        var _image = image.name
         var _nom_prenom = nom_prenom
         var _activite = activite
         var _identifiant_commun_entreprise = identifiant_commun_entreprise
@@ -287,7 +314,7 @@ class InscriptionPromoteur extends Component {
         var _password = password
         
 
-        var result = await promoteur.methods.inscription(_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+        var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
         this.props.history.push("/Loginpromoteur");  
     }
 

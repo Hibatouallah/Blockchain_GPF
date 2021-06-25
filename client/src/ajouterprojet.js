@@ -354,7 +354,7 @@ class ajouterprojet extends Component {
            <br/><br/>
           <h3>Ajouter un projet</h3>
 
-            <form enctype =  "multipart/form-data" onSubmit={(e) => this.ajouterprojet(e)}>
+            <form enctype = "multipart/form-data" onSubmit={(e) => this.ajouterprojet(e)}>
             <Form.Row>
             <FormGroup as={Col} controlId="reference" bsSize="large">
               <FormLabel>Reference</FormLabel>

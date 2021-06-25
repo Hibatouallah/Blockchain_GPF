@@ -123,15 +123,13 @@ class Loginpromoteur extends Component {
           const wallet = await promoteur.methods.getwalletAddress(i).call()
           if(wallet == accounts[0])
           {
-            const em = await promoteur.methods.getpassword(i).call()
-            console.log(em)
                 var result = await promoteur.methods.authentification(i,_email,_password).call()
                 if(result == "welcome"){
-                    //this.setState({ isAuthenticated: true });
+                  
                     alert (result)
                     localStorage.setItem('isAuthenticated', 'true');
-                    //this.props.userHasAuthenticated(true);
-                    this.props.history.push("/Homepromoteur");
+                    localStorage.setItem('ispromoteur', 'true');
+                    this.props.history.push("/");
                 }
                 else {
                     alert (result)
@@ -143,8 +141,6 @@ class Loginpromoteur extends Component {
         }
         
     }
-  
-
     render() {
         const {
             web3, accounts, chainid,promoteur
@@ -173,10 +169,9 @@ class Loginpromoteur extends Component {
                     </p>
                     : null
             }
-            <div>S'Authentifier</div>
-            {accounts[0]}
-            <br/>
         <div className="Login">
+        <center><h4>S'Authentifier</h4></center>
+            <br/>
             <form onSubmit={(e) => this.AuthentificationPromoteur(e)}>
             <FormGroup controlId="email" bsSize="large">
                 <FormLabel >Email</FormLabel >

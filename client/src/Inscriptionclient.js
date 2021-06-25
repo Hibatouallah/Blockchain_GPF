@@ -14,6 +14,7 @@ import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import ReactPhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import axios from 'axios';
 
 class Inscriptionclient extends Component {
 
@@ -24,6 +25,7 @@ class Inscriptionclient extends Component {
           isLoading: false,
           nom_prenom: "",
           cin: "",
+          image:null,
           date_naissance: "",
           numtele: "",
           adresse: "",
@@ -105,6 +107,12 @@ class Inscriptionclient extends Component {
             />
           </form>
         );
+      }
+      onChangeHandlerimage=event=>{
+        this.setState({
+          image: event.target.files[0],
+          loaded: 0,
+        })
       }
       renderForm() {
         return (
@@ -189,6 +197,15 @@ class Inscriptionclient extends Component {
             />
             </FormGroup>
             </Form.Row>
+            <FormGroup as={Col} controlId="image" bsSize="large">
+              <FormLabel>Image principale</FormLabel>
+              <FormControl
+                autoFocus
+                type="file"
+                name="image"
+                onChange={this.onChangeHandlerimage}
+              />
+            </FormGroup>
             <LoaderButton
               block
               bsSize="large"
@@ -271,9 +288,17 @@ class Inscriptionclient extends Component {
     }
 
     InscriptionClient = async (e) => {
-        const {accounts,client,nom_prenom,cin,date_naissance,numtele,adresse,email,password} = this.state
+        const {accounts,client,image,nom_prenom,cin,date_naissance,numtele,adresse,email,password} = this.state
         e.preventDefault()
-        
+        const data2 = new FormData()
+        data2.append('file', this.state.image)
+        axios.post("http://localhost:8000/upload", data2, { 
+            // receive two    parameter endpoint url ,form data
+          })
+        .then(res => { // then print response status
+            console.log(res.statusText)
+        })
+        var _image = image.name
         var _nom_prenom = nom_prenom
         var _cin = cin
         var _date_naissance = date_naissance
@@ -282,7 +307,7 @@ class Inscriptionclient extends Component {
         var _email = email
         var _password = password
 
-        var result = await client.methods.inscription(_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+        var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
         this.props.history.push("/");   
     }
 

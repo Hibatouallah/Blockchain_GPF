@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card,Container,Row,Image,Col,Table} from "react-bootstrap"
+import { Card,Button,Row,Image,Col,Table} from "react-bootstrap"
 import addicon from './img/add.png';
 import deleteicon from './img/delete.png';
 import updateicon from './img/update.png';
@@ -46,10 +46,12 @@ class Listewishlist extends Component {
         }, await this.loadInitialContracts)
         const promoteurs = await this.loadContract("dev", "Promoteur")
         var nb =  await promoteurs.methods.listewishlist().call()
+        console.log(nb)
         this.setState({nbwishlist:nb})
 
         for (var i=0; i < nb; i++) {
             const ref = await promoteurs.methods.getreferencewishlist(i).call()
+            console.log(ref)
             const dateaj = await promoteurs.methods.getdateajout(i).call()            
             const list =[{
                 reference: ref, 
@@ -58,8 +60,8 @@ class Listewishlist extends Component {
             this.setState({
                 wishlist:[...this.state.wishlist,list] 
             })
-       
         }
+        console.log(this.state.wishlist)
     }
 
     loadInitialContracts = async () => {
@@ -142,8 +144,8 @@ class Listewishlist extends Component {
                 <thead>
                     <tr>
                     <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
-                    <th>reference</th>
-                    <th>date ajout</th>
+                    <th>reference du projet</th>
+                    <th>date d'ajout</th>
                     <th>Candidature</th>
 
                     </tr>
@@ -156,7 +158,7 @@ class Listewishlist extends Component {
                             <Image onClick={this.handlepomoteur} src={updateicon} roundedCircle /></td>
                             <td>{list[0].reference}</td>
                             <td>{list[0].dateajout}</td>
-                            <td><button className="cart" onClick={() => this.handleChange(list[0].reference)}> Passer à la candidature</button></td>
+                            <td><Button variant="dark" onClick={() => this.handleChange(list[0].reference)}> Passer à la candidature</Button></td>
                             
                     </tr>
                     

@@ -52,12 +52,14 @@ promoteurs: public(HashMap[uint256,Promoteur_info])
 
 
 @external
-def ajouterwishlist(_reference : String[200],_accountpromoteur : address,_dateajout: String[15]):
+def ajouterwishlist(_reference : String[200],_accountpromoteur : address,_dateajout: String[15])->uint256:
     self.mywishlist[self.nextwishlistindex] = Wishlist({
         accountpromoteur :_accountpromoteur,
         reference : _reference ,
-        dateajout:_dateajout})
+        dateajout: _dateajout})
     self.nextwishlistindex = self.nextwishlistindex +1
+
+    return self.nextwishlistindex
 
 @external
 def ajoutercandidature(_reference : String[200],_accountpromoteur : address,_cahier_prestation_speciale: String[200],_bordereau_prix_detail_estimatif : String[200],_present_reglement_consultation : String[200],_modele_acte_engagement : String[200],_modele_declaration_honneur : String[200]):
@@ -123,6 +125,14 @@ def authentification(_nb:uint256,_email:String[100], _password:String[100]) -> S
 @external
 def listewishlist() -> uint256 :
     return self.nextwishlistindex
+@external
+def getreferencewishlist(nb:uint256)->String[200]:
+    return self.mywishlist[nb].reference
+@external
+def getdateajout(nb:uint256)->String[15]:
+    return self.mywishlist[nb].dateajout
+
+    
 @external
 def listepromoteur() -> uint256 :
     return self.nextpromoteurindex
@@ -216,11 +226,4 @@ def getmodele_declaration_honneur(nb:uint256)->String[200]:
 def getreference(nb:uint256)->String[200]:
     return self.mescandidatures[nb].reference
 
-@external
-def getreferencewishlist(nb:uint256)->String[200]:
-    return self.mywishlist[nb].reference
-
-@external
-def getdateajout(nb:uint256)->String[15]:
-    return self.mywishlist[nb].dateajout
     

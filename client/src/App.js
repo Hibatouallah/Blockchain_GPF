@@ -106,21 +106,51 @@ class App extends Component {
         <NavMenu>
              {localStorage.getItem('isAuthenticated') === 'true' 
             ?<Fragment>
+              {localStorage.getItem('ispromoteur') === 'true' &&
                 <NavLink to='/ProfilePromoteur' activeStyle>
                     Profile
                 </NavLink>
+                }
+                {localStorage.getItem('ispromoteur') === 'true' &&
                 <NavLink to="/ListeCandidature" activeStyle>
                     Mes Candidatures
                 </NavLink>
+                 }
+                 {localStorage.getItem('ispromoteur') === 'true' &&
                 <NavLink to="/Listewishlist" activeStyle>
                     Mon Panier
                 </NavLink>
+                }
+                {localStorage.getItem('ispromoteur') === 'true' &&
                 <NavLink to="/Listeprojetspromoteur" activeStyle>
                     Mes projets
                 </NavLink>
+                }
+               
+                {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to='/Profileclient' activeStyle>
+                    Profile
+                </NavLink>
+                }
+                 {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to="/Listewishlistclient" activeStyle>
+                    Mon Panier
+                </NavLink>
+                }
+                {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to="/Listeprojetspromoteur" activeStyle>
+                    Mes projets
+                </NavLink>
+                }
+                 {localStorage.getItem('isfonds') === 'true' &&
+                <NavLink to="/listeprojets" activeStyle>
+                    Mes projets
+                </NavLink>
+                }
                 <NavLink onClick={this.handleLogout} activeStyle>
                     Se Déconnecter
                 </NavLink>
+                
           </Fragment>
           :<Fragment>
                 <NavLink to='/Inscription' activeStyle>
