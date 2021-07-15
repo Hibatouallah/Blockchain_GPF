@@ -265,7 +265,7 @@ class ajouterprojet extends Component {
         if(existe == false){
           var result = await fonds.methods.ajouterProjet(_nb_client,_mini_hopital,_supermarche,_hamam,_mini_mosque,_pharmacie,_reference,_image,_imagesec1,_imagesec2,_imagesec3,_cout_estimation_travaux,_delai_execution,_montant_caution_provisoire,_duree_validite_offre,_mesures_securites_hygiene,_reception_provisoire_travaux,_cahier_prestations_techniques,_normes_mise_en_oeuvre,_localisation,_descriptif,_superficier,_type_projet,_nb_chambre,_terasse,_garage,_piscine,_etage,_jardin,_balcon).send({from: accounts[0]})
           alert("Produit ajouté")
-          this.props.history.push("/Home");
+          this.props.history.push("/");
         }
         else {
           alert("Produit déja existe")

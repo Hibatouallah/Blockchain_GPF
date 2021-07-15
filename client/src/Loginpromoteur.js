@@ -126,17 +126,16 @@ class Loginpromoteur extends Component {
                 var result = await promoteur.methods.authentification(i,_email,_password).call()
                 if(result == "welcome"){
                   
-                    alert (result)
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('ispromoteur', 'true');
                     this.props.history.push("/");
                 }
                 else {
-                    alert (result)
+                  
                     this.setState({ isLoading: false });
                 }
           }else{
-            alert (wallet+"invalide account"+accounts)
+            alert ("invalide account")
           }
         }
         

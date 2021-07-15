@@ -6,6 +6,7 @@ import { Card,Container,Row,Image,Col,Table,Button} from "react-bootstrap"
 import addicon from './img/add.png';
 import deleteicon from './img/delete.png';
 import updateicon from './img/update.png';
+import addcontratsicon from './img/addcontrats.png';
 
 class listeprojets extends Component {
 
@@ -148,11 +149,12 @@ class listeprojets extends Component {
     }
 
     ajouter = async event => {
-        alert('hello');
         this.props.history.push("/ajouterprojet");
       }
    
-
+    handleaddcontrats = async event => {
+        this.props.history.push("/ajouteravantcontrat");
+      }
 
 
     render() {
@@ -184,21 +186,20 @@ class listeprojets extends Component {
                     </p>
                     : null
             }
-           
-            <br/>
+        
             <Container>
             <Row>
                 <Col xs={12} md={8}>
                 </Col>
                 <Col xs={6} md={4}>
-                    <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Button onClick={this.ajouter} variant="primary">Ajouter un projet</Button></center>
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Button onClick={this.ajouter} variant="outline-primary">Ajouter un projet</Button></center>
                 </Col>
             </Row>
             </Container>
-           <br/><br/>
             <Table responsive >
                 <thead>
                     <tr>
+                    <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contrats</th>
                     <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
                     <th>reference</th>
                     <th>Image_principale</th>
@@ -228,6 +229,7 @@ class listeprojets extends Component {
              
                 {this.state.listeprojet.map((list) =>
                     <tr>
+                            <td><center><Image  onClick={this.handleaddcontrats} src={addcontratsicon} /></center></td>
                             <td><Image  onClick={this.handlepomoteur} src={deleteicon} roundedCircle />
                             <Image onClick={this.handlepomoteur} src={updateicon} roundedCircle /></td>
                             <td>{list[0].references}</td>

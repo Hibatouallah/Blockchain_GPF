@@ -7,6 +7,9 @@ import { LinkContainer } from "react-router-bootstrap";
 import promoteuricon from './img/promoteuricon.png';
 import Slider from "./components/Slider";
 
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn, MDBRipple } from 'mdb-react-ui-kit';
+
+
 class Home extends Component {
   state = {
     web3: null,
@@ -116,6 +119,7 @@ moredetails = (ref) => {
     
         return ( 
             <>
+          
         <Slider />
         <Container>
         
@@ -124,21 +128,20 @@ moredetails = (ref) => {
           {this.state.listeprojet.map((list) =>
      
           <Col  md={4}>
-
-          <Card style={{ width: '18rem' }}>
-              <Card.Img variant="top" fluid  src={list[0].image} />
-              <Card.Body>
-                <Card.Title>{list[0].references}</Card.Title>
-                <Card.Text>
+ 
+            <MDBCard style={{ maxWidth: '22rem' }}>
+              <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
+                <MDBCardImage className="image" src={list[0].image} position='top' alt='...' />
+              </MDBRipple>
+              <MDBCardBody>
+                <MDBCardTitle>{list[0].references}</MDBCardTitle>
+                <MDBCardText>
                 <p><b>Localisation:</b>{list[0].localisation}</p>
-               <p><b>Type du projet :</b>{list[0].type_projet}</p>
-                </Card.Text>
-              </Card.Body>
-              <Card.Body>
-              <Button variant="dark" onClick={() => this.moredetails(list[0].references)}>Plus de detail</Button>
-              </Card.Body>
-            </Card>  
-         
+                      <p><b>Type du projet :</b>{list[0].type_projet}</p>
+                </MDBCardText>
+                <MDBBtn className = "classbtn" onClick={() => this.moredetails(list[0].references)}>Plus de detail</MDBBtn>
+              </MDBCardBody>
+            </MDBCard>
     
           </Col>
 

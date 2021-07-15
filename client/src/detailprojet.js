@@ -5,7 +5,7 @@ import {getEthereum} from "./getEthereum"
 import './App.css';
 import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
-import { Card, Button} from 'react-bootstrap';
+import { Card, Button,Container,Row,Col} from 'react-bootstrap';
 class detailprojet extends Component {
   state = {
     web3: null,
@@ -89,7 +89,6 @@ handleChangewishlistclient = async ()=>{
           var today = new Date(),
           date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
           var result = await client.methods.ajouterwishlist(localStorage.getItem('refdetails'),accounts[0],date).call()
-          alert(result)
           this.props.history.push("/Listewishlistclient");
         }
       }
@@ -363,43 +362,17 @@ loadContract = async (chain, contractName) => {
 
         return ( 
           <>
-                <AwesomeSlider >
+          <br/><br/>
+              <center>
+                <AwesomeSlider className="slider" >
                   <div data-src={this.state.image} />
                   <div data-src={this.state.imagesec1} />
                   <div data-src={this.state.imagesec2} />
                   <div data-src={this.state.imagesec3} />
                 </AwesomeSlider>
-               
-                <div className="details" >
-                    <div className="big-img">
-                    <Card>
-                    <Card.Header as="h5">Details</Card.Header>
-                    <Card.Body>
-                      <Card.Title></Card.Title>
-                      <Card.Text>
-                      <p class = "classp"><b>Type de projet :</b> {this.state.type_projet}</p>
-                      <p class = "classp"><b>Localisation :</b> {this.state.localisation}</p>
-                      <p class = "classp"><b>Cout d'estimation des travaux : </b>{this.state.couts_estimation_travaux} DH</p>
-                      <p class = "classp"><b>Delai d'execution :</b> {this.state.delai_execution}</p>
-                      <p class = "classp"><b>Durée de validité d'offre :</b> {this.state.duree_validite_offre}</p>
-                      <p class = "classp"><b>reception provisoire des travaux :</b> {this.state.reception_provisoire_travaux} </p>
-                      <p class = "classp" ><b>superficier :</b> {this.state.superficier}</p>
-                      <p class = "classp" ><b>nb_chambre :</b> {this.state.nb_chambre}</p>
-                      <p class = "classp"><b>terasse :</b> {this.state.terasse}</p>
-                      <p class = "classp"><b>garage :</b> {this.state.garage}</p>
-                      <p class = "classp"><b>piscine :</b> {this.state.piscine}</p>
-                      <p class = "classp"><b>etage : </b>{this.state.etage}</p>
-                      <p class = "classp"><b>balcon :</b> {this.state.balcon}</p>
-                      <p class = "classp"><b>mini hopital : </b>{this.state.mini_hopital}</p>
-                      <p class = "classp"><b>supermarche :</b> {this.state.supermarche}</p>
-                      <p class = "classp"><b>hamam :</b> {this.state.hamam}</p>
-                      <p class = "classp"><b>mini mosque :</b> {this.state.mini_mosque}</p>
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                    </div>
-                  <div className="box">
-                    <div className="row">
+                </center>
+                {/* 
+                <div className="row">
                       <h4>{this.state.references}</h4>
                       <span>${this.state.montant_caution_provisoire}</span>
                     </div>
@@ -414,8 +387,80 @@ loadContract = async (chain, contractName) => {
                     &nbsp;&nbsp;&nbsp;{localStorage.getItem('ispromoteur') === 'true' &&
                    <button className="cart" onClick={() => this.handleChange()}>Ajouter candidature </button>
                        }
-                  </div>
-          </div>
+                      */}
+                      <br/><br/><br/>
+                  <Card>
+                     <Card.Body className="detailscard">
+                      <Card.Title className="classp" ><b>Référence :{this.state.references}</b></Card.Title>
+                      <Card.Text>
+                      <p ><b>Montant caution provisoire :</b>${this.state.montant_caution_provisoire}</p>
+                      <p><b>Descriptif :</b> {this.state.descriptif}</p>
+                      <p ><b>Superficier: </b>{this.state.superficier} DH</p>
+                      <center>
+                      {localStorage.getItem('isclient') === 'true' &&
+                        <Button className="classbtn" onClick={() => this.handleChangewishlistclient()}>Ajouter au panier </Button>
+                          }
+                        {localStorage.getItem('ispromoteur') === 'true' &&
+                        <Button className="classbtn" onClick={() => this.handleChangewishlist()}>Ajouter au panier </Button>
+                          }
+                        &nbsp;&nbsp;&nbsp;{localStorage.getItem('ispromoteur') === 'true' &&
+                      <Button className="classbtn" onClick={() => this.handleChange()}>Ajouter candidature </Button>
+                          }
+                          </center>
+                      </Card.Text>
+                    </Card.Body>
+                  </Card> 
+    <Container>
+  <Row>
+    <Col>
+                    <Card>
+                    <Card.Header className="detailscardtitle" as="h5">Informations du projet</Card.Header>
+                    <Card.Body className="detailscard">
+                      <Card.Title></Card.Title>
+                      <Card.Text>
+                      <p class = "classp"><b>Type de projet :</b> {this.state.type_projet}</p>
+                      <p class = "classp"><b>Localisation :</b> {this.state.localisation}</p>
+                      <p class = "classp"><b>Cout d'estimation des travaux : </b>{this.state.couts_estimation_travaux} DH</p>
+                      <p class = "classp"><b>Delai d'execution :</b> {this.state.delai_execution}</p>
+                      <p class = "classp"><b>Durée de validité d'offre :</b> {this.state.duree_validite_offre}</p>
+                      <p class = "classp"><b>reception provisoire des travaux :</b> {this.state.reception_provisoire_travaux} </p>
+                      <p class = "classp" ><b>superficier :</b> {this.state.superficier}</p>
+                      
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                  <br/>
+                  </Col>
+    <Col>
+                  <Card>
+      
+                    <Card.Header className="detailscardtitle" as="h5">Details</Card.Header>
+                    <Card.Body className="detailscard">
+                      <Card.Text>
+                      <p class = "classp"><b>terasse :</b> {this.state.terasse}</p>
+                      <p class = "classp"><b>garage :</b> {this.state.garage}</p>
+                      <p class = "classp"><b>piscine :</b> {this.state.piscine}</p>
+                      <p class = "classp"><b>etage : </b>{this.state.etage}</p>
+                      <p class = "classp"><b>balcon :</b> {this.state.balcon}</p>
+                      
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                  <Card>
+                    <Card.Body className="detailscard">
+                      <Card.Text>
+                      <p class = "classp"><b>mini hopital : </b>{this.state.mini_hopital}</p>
+                      <p class = "classp"><b>supermarche :</b> {this.state.supermarche}</p>
+                      <p class = "classp"><b>hamam :</b> {this.state.hamam}</p>
+                      <p class = "classp"><b>mini mosque :</b> {this.state.mini_mosque}</p>
+                      <p class = "classp" ><b>nb_chambre :</b> {this.state.nb_chambre}</p>
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                  
+                  </Col>
+            </Row>
+            </Container>
      </>
 
        )

@@ -2,20 +2,16 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card,Button,Row,Image,Col,Table} from "react-bootstrap"
-import addicon from './img/add.png';
-import deleteicon from './img/delete.png';
-import updateicon from './img/update.png';
+import { Container,Row,Col,Table} from "react-bootstrap"
 
-class Listewishlistclient extends Component {
-
+class listecontratistisnaa extends Component {
     state = {
         web3: null,
         accounts: null,
         chainid: null,
-        clients : null,
-        nbwishlist:0,
-        wishlist:[]        
+        EngagamentPromoteur : null,
+        nbcontrat:0,
+        listecontrat:[]        
     }
 
     componentDidMount = async () => {
@@ -44,24 +40,31 @@ class Listewishlistclient extends Component {
             accounts,
             chainid
         }, await this.loadInitialContracts)
-        const clients = await this.loadContract("dev", "Client")
-        var nb =  await clients.methods.listewishlist().call()
-        console.log(nb)
-        this.setState({nbwishlist:nb})
-
+        const EngagamentPromoteur = await this.loadContract("dev", "EngagamentPromoteur")
+        var nb =  await EngagamentPromoteur.methods.getListecontratistisnaa().call()
+        this.setState({nbcontrat:nb})
         for (var i=0; i < nb; i++) {
-            const ref = await clients.methods.getreferencewishlist(i).call()
-            console.log(ref)
-            const dateaj = await clients.methods.getdateajout(i).call()            
+        
+        const numero = await EngagamentPromoteur.methods.getnumero_rc_istisnaa(i).call()
+        const reference = await EngagamentPromoteur.methods.getreferenceprojet_istisnaa(i).call()
+        const date_commenc= await EngagamentPromoteur.methods.getdate_commencement_istisnaa(i).call()
+        const date_livraison= await EngagamentPromoteur.methods.getdate_livraison_bien(i).call()
+        const modalite= await EngagamentPromoteur.methods.getmodalite_paiement_bien(i).call()
+        const nature= await EngagamentPromoteur.methods.getnature_projet(i).call()
+
             const list =[{
-                reference: ref, 
-                dateajout: dateaj
+                numero_rc: numero, 
+                referenceprojet : reference,
+                date_commencement : date_commenc,
+                date_livraison_bien : date_livraison,
+                modalite_paiement : modalite,
+                nature_projet : nature
             }]
             this.setState({
-                wishlist:[...this.state.wishlist,list] 
+                listecontrat:[...this.state.listecontrat,list] 
             })
+       
         }
-        console.log(this.state.wishlist)
     }
 
     loadInitialContracts = async () => {
@@ -69,13 +72,13 @@ class Listewishlistclient extends Component {
             // Wrong Network!
             return
         }
-        const fonds = await this.loadContract("dev", "Fonds")
+        const EngagamentPromoteur = await this.loadContract("dev", "EngagamentPromoteur")
 
-        if (!fonds) {
+        if (!EngagamentPromoteur) {
             return
         }
         this.setState({
-            fonds
+            EngagamentPromoteur
         })
     }
  
@@ -104,14 +107,19 @@ class Listewishlistclient extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    handleChange = (ref)  =>{
-        localStorage.setItem('refprojet',ref);
-        this.props.history.push("/Confirmerclient");
+    ajouter = async event => {
+        this.props.history.push("/ajouterprojet");
       }
+   
+    handleaddcontrats = async event => {
+        this.props.history.push("/ajouteravantcontrat");
+      }
+
+
     render() {
     
         const {
-            web3, accounts, chainid,fonds
+            web3, accounts, chainid,EngagamentPromoteur
         } = this.state
 
         if (!web3) {
@@ -122,7 +130,7 @@ class Listewishlistclient extends Component {
             return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
         }
 
-        if (!fonds) {
+        if (!EngagamentPromoteur) {
             return <div>Could not find a deployed contract. Check console for details.</div>
         }
 
@@ -139,28 +147,38 @@ class Listewishlistclient extends Component {
             }
            
             <br/>
-           
+            <Container>
+            <Row>
+                <Col xs={12} md={8}>
+                </Col>
+                <Col xs={6} md={4}>
+                </Col>
+            </Row>
+            </Container>
+           <br/><br/>
+           <h3>Liste de contrats Istisnaa </h3>
             <Table responsive >
                 <thead>
                     <tr>
-                    <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
-                    <th>reference du projet</th>
-                    <th>date d'ajout</th>
-                    <th>Confirmation</th>
-
+                    <th>numero_rc</th>
+                    <th>referenceprojet</th>
+                    <th>date_commencement</th>
+                    <th>date_livraison_bien</th>
+                    <th>modalite_paiement</th>
+                    <th>nature_projet</th>
                     </tr>
                 </thead>
                 <tbody>
              
-                {this.state.wishlist.map((list) =>
+                {this.state.listecontrat.map((list) =>
                     <tr>
-                            <td><center><Image onClick={this.handlepomoteur} src={deleteicon} roundedCircle/></center></td>
-                            <td>{list[0].reference}</td>
-                            <td>{list[0].dateajout}</td>
-                            <td><Button variant="dark" onClick={() => this.handleChange(list[0].reference)}> Confirmer </Button></td>
-                            
+                            <td>{list[0].numero_rc}</td>
+                            <td>{list[0].referenceprojet}</td>
+                            <td>{list[0].date_commencement}</td>
+                            <td>{list[0].date_livraison_bien}</td>
+                            <td>{list[0].modalite_paiement}</td>
+                            <td>{list[0].nature_projet}</td>
                     </tr>
-                    
                 )}
                 </tbody>
             </Table>
@@ -169,4 +187,4 @@ class Listewishlistclient extends Component {
     }
 }
 
-export default Listewishlistclient
+export default listecontratistisnaa

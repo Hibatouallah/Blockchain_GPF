@@ -28,9 +28,7 @@ struct Promoteur_info:
     createdAt: String[20]
     updatedAt: String[20]
     Penalits_retard: String[20]
-    assurances_responsabilites_civile: String[100]
-    assurance_rique_chantier:  String[100]
-    assurance_accident_travail:  String[100]
+   
 
 struct Candidature:
     accountpromoteur : address
@@ -102,10 +100,7 @@ def inscription(_photo: String[200],_nom_prenom : String[100],_activite : String
         walletAddress : _walletAddress ,
         createdAt : "0",
         updatedAt : "0",
-        Penalits_retard: "",
-        assurances_responsabilites_civile: " ",
-        assurance_rique_chantier:  " ",
-        assurance_accident_travail: " "})
+        Penalits_retard: ""})
     self.nextpromoteurindex = self.nextpromoteurindex +1
 
 
@@ -139,18 +134,10 @@ def listepromoteur() -> uint256 :
 @external
 def listecandidature() -> uint256 :
     return self.nextcandidatureindex
-@external
-def getassurance_accident_travail(nb:uint256)->String[100]:
-    return self.promoteurs[nb].assurance_accident_travail
-@external
-def getassurance_rique_chantier(nb:uint256)->String[100]:
-    return self.promoteurs[nb].assurance_rique_chantier
+
 @external
 def getphoto(nb:uint256)->String[200]:
     return self.promoteurs[nb].photo
-@external
-def getassurances_responsabilites_civile(nb:uint256)->String[100]:
-    return self.promoteurs[nb].assurances_responsabilites_civile
 
 @external
 def getPenalits_retard(nb:uint256)->String[20]:

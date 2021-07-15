@@ -1,4 +1,4 @@
-from brownie import accounts,Fonds,Client,Promoteur
+from brownie import accounts,Fonds,Client,Promoteur,EngagementClient,EngagamentPromoteur
 
 
 def main():
@@ -6,3 +6,5 @@ def main():
     accounts[0].deploy(Fonds)
     accounts[0].deploy(Client)
     accounts[0].deploy(Promoteur)
+    accounts[0].deploy(EngagementClient)
+    accounts[0].deploy(EngagamentPromoteur)

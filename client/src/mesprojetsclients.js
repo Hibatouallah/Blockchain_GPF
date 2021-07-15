@@ -2,22 +2,22 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+import { Card,Button,Row,Image,Col,Table} from "react-bootstrap"
+import addicon from './img/add.png';
+import deleteicon from './img/delete.png';
+import updateicon from './img/update.png';
 
-import LoaderButton from "./containers/LoaderButton";
-import { FormGroup, FormControl, FormLabel  } from "react-bootstrap";
-import "./containers/Login.css";
-
-
-class Loginfonds extends Component {
+class mesprojetsclients extends Component {
 
     state = {
         web3: null,
         accounts: null,
         chainid: null,
-        fonds : null,
-        email: "",
-        password: "",
-        isLoading: false
+        clients : null,
+        client : null,
+        nbclientengage:0,
+        nbclient : 0,
+        clientengage:[]        
     }
 
     componentDidMount = async () => {
@@ -40,27 +40,45 @@ class Loginfonds extends Component {
 
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
-
+     
         this.setState({
             web3,
             accounts,
             chainid
         }, await this.loadInitialContracts)
-        
+        const clients = await this.loadContract("dev", "EngagementClient")
+        var nb =  await clients.methods.getlisteclientengage().call()
+        this.setState({nbclientengage:nb})
 
-
+        const client = await this.loadContract("dev", "Client")
+        var nb =  await client.methods.listeclient().call()
+        this.setState({nbclient:nb})
+        var ci = ""
+        for (var i=0; i < nb; i++) {
+          const wallet = await client.methods.getwalletAddress(i).call()
+          if(accounts[0] == wallet){
+            ci = await client.methods.getcin(i).call()
+          }
+        }
+        for (var i=0; i < nb; i++) {
+            const cin = await clients.methods.getcin(i).call()
+            if(cin == ci)
+            {
+                const ref = await clients.methods.getreferenceclient(i).call() 
+                const type = await clients.methods.gettypecontract(i).call()            
+                const list =[{
+                    cinclient : cin,
+                    reference: ref, 
+                    typecontrat: type
+                }]
+                this.setState({
+                    clientengage:[...this.state.clientengage,list] 
+                })
+            }
+           
+        }
     }
-    validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 0;
-      }
-    
-      handleChange = event => {
-        this.setState({
-          [event.target.id]: event.target.value
-        });
-      }
-    
-     
+
     loadInitialContracts = async () => {
         if (this.state.chainid <= 42) {
             // Wrong Network!
@@ -100,39 +118,13 @@ class Loginfonds extends Component {
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
-   
-    Authentification = async (e,req) => {
-        const {accounts,fonds,email,password} = this.state
-        e.preventDefault()
-       
-        var _email = email
-        var _password = password
-       
-        if (_email === " ") {
-            alert("invalid email"+_email)
-            return
-        }
-        if (_password === " ") {
-            alert("invalid password")
-            return
-        }
-       
-        var result = await fonds.methods.authentification(_email, _password,accounts[0]).call()
-    
-        if(result == "welcome"){
-            localStorage.setItem('isAuthenticated', 'true');
-            localStorage.setItem('isfonds', 'true');
-            this.props.history.push("/");
-        }
-        else {
-            alert ("invalide email ou mot de passe")
-            this.setState({ isLoading: false });
-        }
-        
-    }
-  
 
+    handleChange = (ref)  =>{
+        localStorage.setItem('refprojet',ref);
+        this.props.history.push("/Confirmerclient");
+      }
     render() {
+    
         const {
             web3, accounts, chainid,fonds
         } = this.state
@@ -150,7 +142,7 @@ class Loginfonds extends Component {
         }
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
-
+     
         return (<div className="container">
           
             {
@@ -160,45 +152,33 @@ class Loginfonds extends Component {
                     </p>
                     : null
             }
-            
+           
             <br/>
-        <div className="Login">
-        
-            <form onSubmit={(e) => this.Authentification(e)}>
-            <h3>S'Authentifier </h3>
-            <FormGroup controlId="email" bsSize="large">
-                <FormLabel >Email</FormLabel >
-                <FormControl
-                autoFocus
-                type="email"
-                value={this.state.email}
-                onChange={(e) => this.setState({email: e.target.value})}
-                />
-            </FormGroup>
-            <FormGroup controlId="password" bsSize="large">
-                <FormLabel >Password</FormLabel >
-                <FormControl
-                value={this.state.password}
-                onChange={(e) => this.setState({password: e.target.value})}
-                type="password"
-                />
-            </FormGroup>
-            <LoaderButton
-                block
-                bsSize="large"
-                disabled={!this.validateForm()}
-                type="submit"
-                isLoading={this.state.isLoading}
-                text="Login"
-                loadingText="Logging in…"
-                />
-        </form>
-                
-        </div>
-    </div>
-  
-);
+           
+            <Table responsive >
+                <thead>
+                    <tr>
+                    <th>Votre CIN</th>
+                    <th>Reference projet</th>
+                    <th>Type de contrat</th>
+                    </tr>
+                </thead>
+                <tbody>
+             
+                {this.state.clientengage.map((list) =>
+                    <tr>
+                           
+                            <td>{list[0].cinclient}</td>
+                            <td>{list[0].reference}</td>
+                            <td>{list[0].typecontrat}</td>
+                    </tr>
+                    
+                )}
+                </tbody>
+            </Table>
+            
+        </div>)
     }
 }
 
-export default Loginfonds
+export default mesprojetsclients

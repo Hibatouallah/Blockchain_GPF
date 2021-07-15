@@ -308,7 +308,7 @@ class Inscriptionclient extends Component {
         var _password = password
 
         var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
-        this.props.history.push("/");   
+        this.props.history.push("/Loginclient");   
     }
 
     render() {
@@ -331,20 +331,26 @@ class Inscriptionclient extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="container">
-          <br/><br/>
-          <h3>S'inscrire</h3>
-            {
-                !isAccountsUnlocked ?
-                    <p><strong>Connect with Metamask and refresh the page to
-                        be able to edit the storage fields.</strong>
-                    </p>
-                    : null
-            }
-         
-                {this.state.newUser === null
-                ? this.renderForm()
-                : this.renderConfirmationForm()}
-       
+            <br/><br/>
+              <div className="slContainer">
+                  <div className ="formBoxLeftSignupClient"></div>
+                  <div className="formBoxRight">
+                    <div className = "formContent">
+                    <h3>S'inscrire</h3>
+                      {
+                          !isAccountsUnlocked ?
+                              <p><strong>Connect with Metamask and refresh the page to
+                                  be able to edit the storage fields.</strong>
+                              </p>
+                              : null
+                      }
+                  
+                          {this.state.newUser === null
+                          ? this.renderForm()
+                          : this.renderConfirmationForm()}
+                  </div>
+              </div>
+          </div>
         </div>)
     }
 }

@@ -127,17 +127,15 @@ class Loginclient extends Component {
           {
                 var result = await client.methods.authentification(i,_email,_password).call()
                 if(result == "welcome"){
-                    alert (result)
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('isclient', 'true');
                     this.props.history.push("/");
                 }
                 else {
-                    alert (result)
                     this.setState({ isLoading: false });
                 }
           }else{
-            alert (wallet+"invalide account"+accounts)
+            alert ("invalide account")
           }
         }
         
@@ -163,7 +161,7 @@ class Loginclient extends Component {
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
-        return (<div className="container">
+        return (<div className="signUpLoginBox">
           
             {
                 !isAccountsUnlocked ?
@@ -172,10 +170,11 @@ class Loginclient extends Component {
                     </p>
                     : null
             }
-            <div>S'Authentifier</div>
+            
             <br/>
-        <div className="Login">
+        <div className="slContainer">
             <form onSubmit={(e) => this.AuthentificationClient(e)}>
+            <h3>S'Authentifier</h3>
             <FormGroup controlId="email" bsSize="large">
                 <FormLabel >Email</FormLabel >
                 <FormControl

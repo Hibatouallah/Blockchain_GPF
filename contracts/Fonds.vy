@@ -9,6 +9,7 @@ password: String[100]
 walletAddress: address
 nbprojet : uint256
 
+
 @external
 def __init__():
     self.email = "hiba@hotmail.com"
@@ -48,8 +49,12 @@ struct Projet_infos:
     hamam : String[20]
     mini_mosque : String[20]
     pharmacie : String[20]
+    status: String[50]
+
+
 
 projets: public(HashMap[uint256,Projet_infos])
+
 
 @external
 def ajouterProjet(_nb_client: uint256,_mini_hopital:String[20],_supermarche:String[20],_hamam:String[20],_mini_mosque:String[20],_pharmacie:String[20],_reference : String[200],_image : String[200],_imagedet1 : String[200],_imagedet2 : String[200],_imagedet3 : String[200],_cout_estimation_travaux:String[30],_delai_execution: uint256,_montant_caution_provisoire: String[30],_duree_validite_offre: uint256,_mesures_securites_hygiene:String[200],_reception_provisoire_travaux: String[200],_cahier_prestations_techniques: String[200],_normes_mise_en_oeuvre: String[200],_localisation:String[1000],_descriptif:String[6000],_superficier:String[20],_type_projet: String[100],_nb_chambre: uint256,_terasse : String[20],_garage : String[20],_piscine : String[20],_etage : uint256,_jardin:String[20],_balcon:String[20])-> String[50]:
@@ -86,7 +91,8 @@ def ajouterProjet(_nb_client: uint256,_mini_hopital:String[20],_supermarche:Stri
         supermarche : _supermarche,
         hamam : _hamam,
         mini_mosque : _mini_mosque,
-        pharmacie : _pharmacie    
+        pharmacie : _pharmacie ,
+        status : "disponible"   
         })
     existe = "Félicitation,vous êtes inscrit"
     self.nbprojet = self.nbprojet+1
@@ -139,13 +145,14 @@ def supprimerprojet(nb : uint256)-> String[50]:
         supermarche : "",
         hamam : "",
         mini_mosque : "",
-        pharmacie : ""
+        pharmacie : "",
+        status : ""
              
     })
     res = "Projet supprimé "
     return res
 @external
-def modifierProjet(_nb_client:uint256,_mini_hopital:String[20],_supermarche:String[20],_hamam:String[20],_mini_mosque:String[20],_pharmacie:String[20],_reference : String[200],_image : String[200],_imagedet1 : String[200],_imagedet2 : String[200],_imagedet3 : String[200],_cout_estimation_travaux:String[30],_delai_execution: uint256,_montant_caution_provisoire: String[30],_duree_validite_offre: uint256,_mesures_securites_hygiene:String[200],_reception_provisoire_travaux: String[200],_reception_definitive:String[200],_cahier_prestations_techniques: String[200],_normes_mise_en_oeuvre: String[200],_localisation:String[1000],_descriptif:String[6000],_superficier:String[20],_type_projet: String[100],_nb_chambre: uint256,_terasse : String[20],_garage : String[20],_piscine : String[20],_etage : uint256,_jardin:String[20],_balcon:String[20])-> String[50]:
+def modifierProjet(_status:String[50],_nb_client:uint256,_mini_hopital:String[20],_supermarche:String[20],_hamam:String[20],_mini_mosque:String[20],_pharmacie:String[20],_reference : String[200],_image : String[200],_imagedet1 : String[200],_imagedet2 : String[200],_imagedet3 : String[200],_cout_estimation_travaux:String[30],_delai_execution: uint256,_montant_caution_provisoire: String[30],_duree_validite_offre: uint256,_mesures_securites_hygiene:String[200],_reception_provisoire_travaux: String[200],_reception_definitive:String[200],_cahier_prestations_techniques: String[200],_normes_mise_en_oeuvre: String[200],_localisation:String[1000],_descriptif:String[6000],_superficier:String[20],_type_projet: String[100],_nb_chambre: uint256,_terasse : String[20],_garage : String[20],_piscine : String[20],_etage : uint256,_jardin:String[20],_balcon:String[20])-> String[50]:
     existe : String[50] = " "
  
     self.projets[self.nbprojet] = Projet_infos({
@@ -179,10 +186,12 @@ def modifierProjet(_nb_client:uint256,_mini_hopital:String[20],_supermarche:Stri
         supermarche : _supermarche,
         hamam : _hamam,
         mini_mosque : _mini_mosque,
-        pharmacie : _pharmacie
+        pharmacie : _pharmacie,
+        status : _status
         })
     existe = "Modification effectuée avec succès"
     return existe
+
 @external
 def listeprojet() -> uint256 :
     return self.nbprojet
@@ -193,6 +202,10 @@ def getRef(nb:uint256)->String[200]:
 @external
 def getCout_estimation_travaux(nb:uint256)->String[30]:
     return self.projets[nb].cout_estimation_travaux
+
+@external
+def getstatus(nb:uint256)->String[50]:
+    return self.projets[nb].status
 
 @external
 def getDelai_execution(nb:uint256)->uint256:
@@ -283,3 +296,4 @@ def getmini_mosque(nb:uint256)->String[20]:
 @external
 def getpharmacie(nb:uint256)->String[20]:
     return self.projets[nb].pharmacie 
+

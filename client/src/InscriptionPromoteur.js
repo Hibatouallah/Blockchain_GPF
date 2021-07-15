@@ -113,7 +113,7 @@ class InscriptionPromoteur extends Component {
             
             <Form.Row>
             <FormGroup as={Col} controlId="nom_prenom" bsSize="large">
-              <FormLabel>Votre nom complet</FormLabel>
+              <FormLabel> Nom complet</FormLabel>
               <FormControl
                 autoFocus
                 type="text"
@@ -123,7 +123,7 @@ class InscriptionPromoteur extends Component {
               /> 
             </FormGroup>
             <FormGroup as={Col} controlId="activite" bsSize="large">
-              <FormLabel>Votre activité</FormLabel>
+              <FormLabel> Activité</FormLabel>
               <FormControl
                 value={this.state.activite}
                 onChange={(e) => this.setState({activite: e.target.value})}
@@ -133,7 +133,7 @@ class InscriptionPromoteur extends Component {
             </Form.Row>
             <Form.Row>
             <FormGroup as={Col} controlId="identifiant_commun_entreprise" bsSize="large">
-              <FormLabel>Votre identifiant commun d'entreprise</FormLabel>
+              <FormLabel> Identifiant commun d'entreprise</FormLabel>
               <FormControl
                 value={this.state.identifiant_commun_entreprise}
                 onChange={(e) => this.setState({identifiant_commun_entreprise: e.target.value})}
@@ -141,7 +141,7 @@ class InscriptionPromoteur extends Component {
               />
             </FormGroup>
             <FormGroup as={Col} controlId="identifiant_fiscal" bsSize="large">
-              <FormLabel>Votre identifiant fiscal</FormLabel>
+              <FormLabel> Identifiant fiscal</FormLabel>
               <FormControl
                 value={this.state.identifiant_fiscal}
                 onChange={(e) => this.setState({identifiant_fiscal: e.target.value})}
@@ -151,7 +151,7 @@ class InscriptionPromoteur extends Component {
             </Form.Row>
             <Form.Row>
             <FormGroup as={Col} controlId="numero_rc" bsSize="large">
-              <FormLabel>Votre numéro RC</FormLabel>
+              <FormLabel> Numéro RC</FormLabel>
               <FormControl
                 value={this.state.numero_rc}
                 onChange={(e) => this.setState({numero_rc: e.target.value})}
@@ -159,7 +159,7 @@ class InscriptionPromoteur extends Component {
               />
             </FormGroup>
             <FormGroup as={Col} controlId="email" bsSize="large">
-              <FormLabel>Votre email</FormLabel>
+              <FormLabel> Email</FormLabel>
               <FormControl
                 value={this.state.email}
                 onChange={(e) => this.setState({email: e.target.value})}
@@ -169,7 +169,7 @@ class InscriptionPromoteur extends Component {
             </Form.Row>
             <Form.Row>
             <FormGroup as={Col} controlId="adresse" bsSize="large">
-              <FormLabel>Votre Adresse</FormLabel>
+              <FormLabel> Adresse</FormLabel>
               <FormControl
                 value={this.state.adresse}
                 onChange={(e) => this.setState({adresse: e.target.value})}
@@ -188,7 +188,7 @@ class InscriptionPromoteur extends Component {
             </Form.Row>
             <Form.Row>
             <FormGroup as={Col} controlId="password" bsSize="large">
-            <FormLabel>votre Mot de passe</FormLabel>
+            <FormLabel> Mot de passe</FormLabel>
             <FormControl
                 value={this.state.password}
                 onChange={(e) => this.setState({password: e.target.value})}
@@ -338,7 +338,11 @@ class InscriptionPromoteur extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="container">
-          <br/><br/>
+        <br/><br/>
+          <div className="slContainer">
+              <div className ="formBoxLeftSignupPromoteur"></div>
+              <div className="formBoxRight">
+                <div className = "formContent">
           <h3>S'inscrire</h3>
             {
                 !isAccountsUnlocked ?
@@ -352,7 +356,9 @@ class InscriptionPromoteur extends Component {
                 ? this.renderForm()
                 : this.renderConfirmationForm()}
        
-         
+       </div>
+              </div>
+          </div>
         </div>)
     }
 }

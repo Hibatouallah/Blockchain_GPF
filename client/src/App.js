@@ -15,16 +15,15 @@ import {
   NavBtn,
   NavBtnLink
 } from './NavbarElements';
-import React, { Component, Fragment , useState } from "react";
+import React, { Component, Fragment} from "react";
 
 import {getWeb3} from "./getWeb3"
 import {getEthereum} from "./getEthereum"
 import { combineReducers } from 'redux';
 
-
+import { MDBCol, MDBContainer, MDBRow, MDBFooter } from "mdbreact";
 class App extends Component {
-
- 
+    
     state = {
         isAuthenticated: false,
         isAuthenticating: true,
@@ -33,13 +32,9 @@ class App extends Component {
         chainid: null,
         nouser : true
     };
-  
-    
     userHasAuthenticated = authenticated => {
         this.setState({ isAuthenticated: true });
     }
- 
-
     handleLogout = async event => {
       localStorage.clear();
       localStorage.setItem('nouser',true);
@@ -75,10 +70,8 @@ class App extends Component {
         }, await this.loadInitialContracts)
       
         localStorage.setItem('nouser',this.state.nouser);
-        alert(localStorage.getItem('isAuthenticated'))
+   
         if(localStorage.getItem('userpromo') === 'true' || localStorage.getItem('userfonds') === 'true'){
-          alert(localStorage.getItem('userpromo'))
-          alert(localStorage.getItem('userfonds'))
           this.state.nouser = false
           localStorage.setItem('nouser',this.state.nouser);
         } 
@@ -89,6 +82,7 @@ class App extends Component {
     }
 
     render() {
+        const REACT_VERSION = React.version;
 
         const childProps = {
             isAuthenticatedPromo: this.state.isAuthenticatedPromo,
@@ -138,13 +132,18 @@ class App extends Component {
                 </NavLink>
                 }
                 {localStorage.getItem('isclient') === 'true' &&
-                <NavLink to="/Listeprojetspromoteur" activeStyle>
+                <NavLink to="/mesprojetsclients" activeStyle>
                     Mes projets
                 </NavLink>
                 }
                  {localStorage.getItem('isfonds') === 'true' &&
                 <NavLink to="/listeprojets" activeStyle>
                     Mes projets
+                </NavLink>
+                }
+                {localStorage.getItem('isfonds') === 'true' &&
+                <NavLink to="/listecontrats" activeStyle>
+                     Mes Contrats
                 </NavLink>
                 }
                 <NavLink onClick={this.handleLogout} activeStyle>
@@ -167,10 +166,45 @@ class App extends Component {
                   </NavLink>
             }
         </NavMenu>
-    
-    
       </Nav>
+    
       <Routes childProps={childProps} />
+      <MDBFooter className="footerbg">
+      <MDBContainer fluid className="text-center text-md-left">
+          <br/>
+        <MDBRow>
+          <MDBCol md="6">
+            <h5 className="title">ImmoTech</h5>
+            <p className="title">
+              Here you can use rows and columns here to organize your footer
+              content.
+            </p>
+          </MDBCol>
+          <MDBCol md="6">
+            <h5 className="title">Links</h5>
+            <ul>
+              <li className="list-unstyled title">
+                <a href="#!">Link 1</a>
+              </li>
+              <li className="list-unstyled title">
+                <a href="#!">Link 2</a>
+              </li>
+              <li className="list-unstyled title">
+                <a href="#!">Link 3</a>
+              </li>
+              <li className="list-unstyled title">
+                <a href="#!">Link 4</a>
+              </li>
+            </ul>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+      <div className="footer-copyright text-center py-3">
+        <MDBContainer className="title" fluid>
+          &copy; {new Date().getFullYear()} Copyright: <a href="https://www.mdbootstrap.com"> ImmoTech</a>
+        </MDBContainer>
+      </div>
+    </MDBFooter>
     </>
   );
     }
