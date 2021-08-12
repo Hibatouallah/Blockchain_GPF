@@ -30,7 +30,6 @@ class ajoutercontratistisnaa extends Component {
   
     validateForm() {
         return (
-          this.state.referenceprojet.length > 0 &&
           this.state.date_commencement.length > 0 &&
           this.state.date_livraison_bien.length > 0 &&
           this.state.modalite_paiement.length > 0 &&
@@ -109,10 +108,10 @@ class ajoutercontratistisnaa extends Component {
     }
 
     ajoutercontrat = async (e) => {
-        const {accounts,EngagamentPromoteur,referenceprojet,date_commencement,date_livraison_bien,modalite_paiement,nature_projet} = this.state
+        const {accounts,EngagamentPromoteur,date_commencement,date_livraison_bien,modalite_paiement,nature_projet} = this.state
         e.preventDefault()
   
-        var _referenceprojet= referenceprojet
+        var _referenceprojet= localStorage.getItem('reference')
         var _date_commencement = date_commencement
         var _date_livraison_bien = date_livraison_bien
         var _modalite_paiement = modalite_paiement
@@ -147,7 +146,9 @@ class ajoutercontratistisnaa extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -168,7 +169,9 @@ class ajoutercontratistisnaa extends Component {
                 autoFocus
                 type="text"
                 name="referenceprojet"
+                value={localStorage.getItem('reference')}
                 onChange={(e) => this.setState({referenceprojet: e.target.value})}
+                readOnly
               />
             </FormGroup>
             <FormGroup as={Col} controlId="date_commencement " bsSize="large" readOnly>

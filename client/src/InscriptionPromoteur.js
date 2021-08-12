@@ -14,7 +14,10 @@ import "./containers/Signup.css";
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import axios from 'axios';
+
+const ipfsClient = require('ipfs-api')
+// connect to ipfs daemon API server
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 class InscriptionPromoteur extends Component {
@@ -25,7 +28,7 @@ class InscriptionPromoteur extends Component {
         this.state = {
           isLoading: false,
           nom_prenom: "",
-          image:null,
+          imageHash:null,
           activite: "",
           identifiant_commun_entreprise: 0,
           identifiant_fiscal: 0,
@@ -35,16 +38,14 @@ class InscriptionPromoteur extends Component {
           password: "",
           passwordconfirmation: "",
           confirmationCode: "",
-          newUser: null
+          newUser: null,
+          web3: null,
+          accounts: null,
+          chainid: null,
+          promoteur : null,
+          buffer : null
         };
       }
-
-    state = {
-        web3: null,
-        accounts: null,
-        chainid: null,
-        promoteur : null
-    }
     validateForm() {
         return (
           this.state.nom_prenom.length > 0 &&
@@ -105,6 +106,16 @@ class InscriptionPromoteur extends Component {
             />
           </form>
         );
+      }
+      onChangeHandlerimage= (event)=>{
+        event.preventDefault()
+          //Process file for IPFS ....
+          const file = event.target.files[0]
+          const reader = new window.FileReader()
+          reader.readAsArrayBuffer(file)
+          reader.onloadend = () => {
+              this.setState({buffer : Buffer.from(reader.result)})
+          }
       }
       renderForm() {
         return (
@@ -285,25 +296,19 @@ class InscriptionPromoteur extends Component {
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
-    onChangeHandlerimage=event=>{
-      this.setState({
-        image: event.target.files[0],
-        loaded: 0,
-      })
-    }
+  
 
     InscriptionPromoteur = async (e) => {
-        const {accounts,promoteur,image,nom_prenom,activite,identifiant_commun_entreprise,identifiant_fiscal,numero_rc,adresse,email,password} = this.state
+        const {accounts,promoteur,nom_prenom,activite,identifiant_commun_entreprise,identifiant_fiscal,numero_rc,adresse,email,password} = this.state
         e.preventDefault()
-        const data2 = new FormData()
-        data2.append('file', this.state.image)
-        axios.post("http://localhost:8000/upload", data2, { 
-            // receive two    parameter endpoint url ,form data
-          })
-        .then(res => { // then print response status
-            console.log(res.statusText)
-        })
-        var _image = image.name
+        console.log("Submitting File .....")
+        if (this.state.buffer){
+            const file = await ipfs.add(this.state.buffer)
+            this.state.imageHash = file[0]["hash"]
+            console.log(this.state.imageHash)
+          
+        }
+        var _image = this.state.imageHash
         var _nom_prenom = nom_prenom
         var _activite = activite
         var _identifiant_commun_entreprise = identifiant_commun_entreprise
@@ -312,10 +317,26 @@ class InscriptionPromoteur extends Component {
         var _adresse = adresse
         var _email = email
         var _password = password
-        
 
-        var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
-        this.props.history.push("/Loginpromoteur");  
+        var nbpromo = await promoteur.methods.listepromoteur().call()
+        if(nbpromo == 0){
+          var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+          this.props.history.push("/Loginpromoteur"); 
+        }
+        else{
+          for(var i = 0;i<nbpromo;i++){
+            var wallet = await promoteur.methods.getwalletAddress(i).call()
+            if(wallet == accounts[0])
+              {
+                alert('Compte déja existe')
+                this.props.history.push("/Loginpromoteur");
+              }
+              else{
+                var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+                this.props.history.push("/Loginpromoteur"); 
+              }
+          }
+        }
     }
 
     render() {

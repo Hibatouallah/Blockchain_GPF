@@ -168,7 +168,9 @@ class Loginpromoteur extends Component {
                     </p>
                     : null
             }
-        <div className="Login">
+        <div className="slContainer">
+        <div className ="formBoxLeftSignupPromoteur"></div>
+                  <div className="formBoxRight">
         <center><h4>S'Authentifier</h4></center>
             <br/>
             <form onSubmit={(e) => this.AuthentificationPromoteur(e)}>
@@ -199,7 +201,7 @@ class Loginpromoteur extends Component {
                 loadingText="Logging in…"
                 />
         </form>
-                
+        </div>     
         </div>
     </div>
   

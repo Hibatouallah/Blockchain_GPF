@@ -8,7 +8,7 @@ email: String[100]
 password: String[100]
 walletAddress: address
 nbprojet : uint256
-
+nbnotification :uint256
 
 @external
 def __init__():
@@ -16,6 +16,7 @@ def __init__():
     self.password = "password"
     self.walletAddress = 0xdb06cfD3920e260FE3538D35AD1eE38fB336c953
     self.nbprojet = 0
+    self.nbnotification = 0
 
 struct Projet_infos:
     reference : String[200]
@@ -51,11 +52,23 @@ struct Projet_infos:
     pharmacie : String[20]
     status: String[50]
 
-
+struct NotificationFonds :
+    message : String[30000]
+    status : String[25]
 
 projets: public(HashMap[uint256,Projet_infos])
+notification :public(HashMap[uint256,NotificationFonds])
 
-
+@external
+def ajouternotification(_message : String[30000]):
+    self.notification[self.nbnotification] = NotificationFonds({
+         message : _message,
+         status : 'Disponible'
+    })
+    self.nbnotification = self.nbnotification + 1
+@external
+def modifiernotification(_nb:uint256):
+    self.notification[_nb].status = "Supprimer"
 @external
 def ajouterProjet(_nb_client: uint256,_mini_hopital:String[20],_supermarche:String[20],_hamam:String[20],_mini_mosque:String[20],_pharmacie:String[20],_reference : String[200],_image : String[200],_imagedet1 : String[200],_imagedet2 : String[200],_imagedet3 : String[200],_cout_estimation_travaux:String[30],_delai_execution: uint256,_montant_caution_provisoire: String[30],_duree_validite_offre: uint256,_mesures_securites_hygiene:String[200],_reception_provisoire_travaux: String[200],_cahier_prestations_techniques: String[200],_normes_mise_en_oeuvre: String[200],_localisation:String[1000],_descriptif:String[6000],_superficier:String[20],_type_projet: String[100],_nb_chambre: uint256,_terasse : String[20],_garage : String[20],_piscine : String[20],_etage : uint256,_jardin:String[20],_balcon:String[20])-> String[50]:
     existe : String[50] = " "
@@ -94,7 +107,7 @@ def ajouterProjet(_nb_client: uint256,_mini_hopital:String[20],_supermarche:Stri
         pharmacie : _pharmacie ,
         status : "disponible"   
         })
-    existe = "Félicitation,vous êtes inscrit"
+    existe = "Félicitation,vous avez ajouté un projet"
     self.nbprojet = self.nbprojet+1
     return existe
 
@@ -196,6 +209,9 @@ def modifierProjet(_status:String[50],_nb_client:uint256,_mini_hopital:String[20
 def listeprojet() -> uint256 :
     return self.nbprojet
 @external
+def getnbnotification() -> uint256 :
+    return self.nbnotification
+@external
 def getRef(nb:uint256)->String[200]:
     return self.projets[nb].reference
 
@@ -241,7 +257,6 @@ def getlocalisation(nb:uint256)->String[1000]:
 @external
 def getsuperficier(nb:uint256)->String[20]:
     return self.projets[nb].superficier 
-
 @external
 def gettype_projet(nb:uint256)->String[100]:
     return self.projets[nb].type_projet 
@@ -296,4 +311,15 @@ def getmini_mosque(nb:uint256)->String[20]:
 @external
 def getpharmacie(nb:uint256)->String[20]:
     return self.projets[nb].pharmacie 
+@external
+def getnb_client(nb:uint256)->uint256:
+    return self.projets[nb].nb_client 
 
+#Notification
+
+@external
+def getmessage(nb:uint256)->String[30000]:
+    return self.notification[nb].message
+@external
+def getstatusnotfication(nb:uint256)->String[25]:
+    return self.notification[nb].status

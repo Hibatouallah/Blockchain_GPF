@@ -2,12 +2,10 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card,Container,Row,Image,Col,Table} from "react-bootstrap"
-import addicon from './img/add.png';
-import deleteicon from './img/delete.png';
-import updateicon from './img/update.png';
+import {Button,Table} from "react-bootstrap"
 
-class listeprojets extends Component {
+
+class ListeCandidature extends Component {
 
     state = {
         web3: null,
@@ -49,20 +47,25 @@ class listeprojets extends Component {
         this.setState({nbcandidature:nb})
 
         for (var i=0; i < nb; i++) {
+            const account = await promoteurs.methods.getaccountpromoteur(i).call()
+            const nu_rc = await promoteurs.methods.getnumero_rccandidature(i).call()
             const ref = await promoteurs.methods.getreference(i).call()
             const cahier = await promoteurs.methods.getcahier_prestation_speciale(i).call()
             const bordereau = await promoteurs.methods.getbordereau_prix_detail_estimatif(i).call()
             const present = await promoteurs.methods.getpresent_reglement_consultation(i).call()
             const modele_acte = await promoteurs.methods.getmodele_acte_engagement(i).call()
             const modele_declaration = await promoteurs.methods.getmodele_declaration_honneur(i).call()
-            
+            const cv = await promoteurs.methods.getcvpromoteur(i).call()
             const list =[{
+                accountpromoteur : account,
                 reference: ref, 
                 cahier_prestation_speciale : cahier,
                 bordereau_prix_detail_estimatif : bordereau,
                 present_reglement_consultation : present,
                 modele_acte_engagement : modele_acte,
                 modele_declaration_honneur: modele_declaration, 
+                cvpromoteur : cv,
+                numero_rc : nu_rc
             }]
             this.setState({
                 listecandidature:[...this.state.listecandidature,list] 
@@ -110,7 +113,51 @@ class listeprojets extends Component {
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
+    handleChange = async(ref,accountpromoteur) =>{
+        // Get network provider and web3 instance.
+        const web3 = await getWeb3()
 
+        // Try and enable accounts (connect metamask)
+        try {
+            const ethereum = await getEthereum()
+            ethereum.enable()
+        } catch (e) {
+            console.log(`Could not enable accounts. Interaction with contracts not available.
+            Use a modern browser with a Web3 plugin to fix this issue.`)
+            console.log(e)
+        }
+
+        // Use web3 to get the user's accounts
+        const accounts = await web3.eth.getAccounts()
+
+        // Get the current chain id
+        const chainid = parseInt(await web3.eth.getChainId())
+     
+        this.setState({
+            web3,
+            accounts,
+            chainid
+        }, await this.loadInitialContracts)
+        const promoteur = await this.loadContract("dev", "Promoteur")
+        
+        var _message = " Félicitation,vous etes choisi comme promoteur pour le projet avec la reference :"+ref+",veuillez completer la procédure d'engagement"
+        var result = await promoteur.methods.ajouternotification(_message,accountpromoteur).send({from: accounts[0]})
+        var nb = await promoteur.methods.listecandidature().call()
+        console.log(nb)
+        for(var i = 0;i<nb;i++){
+            var account = await promoteur.methods.getaccountpromoteur(i).call()
+            console.log(account)
+            if(account == accountpromoteur){
+                const reference = await promoteur.methods.getreference(i).call()
+                console.log(reference)
+                console.log(ref)
+                if(reference == ref){
+                    var result2 = await promoteur.methods.confirmercandidature(i).send({from: accounts[0]})
+                    alert("Message est envoyé au promoteur ") 
+                }  
+            }
+        }
+    }
     render() {
     
         const {
@@ -132,7 +179,9 @@ class listeprojets extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/LoginFonds")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -144,10 +193,12 @@ class listeprojets extends Component {
             <br/>
            
             <Table responsive >
-                <thead>
+                <thead class="thead-dark">
                     <tr>
-                    <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
+                    <th>Confirmer</th>
                     <th>reference</th>
+                    <th>numero_rc</th>
+                    <th>CV</th>
                     <th>cahier_prestation_speciale</th>
                     <th>bordereau_prix_detail_estimatif</th>
                     <th>present_reglement_consultation</th>
@@ -159,14 +210,15 @@ class listeprojets extends Component {
              
                 {this.state.listecandidature.map((list) =>
                     <tr>
-                            <td><Image  onClick={this.handlepomoteur} src={deleteicon} roundedCircle />
-                            <Image onClick={this.handlepomoteur} src={updateicon} roundedCircle /></td>
+                            <td><Button variant="dark" onClick={() => this.handleChange(list[0].reference,list[0].accountpromoteur)}>Confirmer</Button></td>
                             <td>{list[0].reference}</td>
-                            <td>{list[0].cahier_prestation_speciale}</td>
-                            <td>{list[0].bordereau_prix_detail_estimatif}</td>
-                            <td>{list[0].present_reglement_consultation}</td>
-                            <td>{list[0].modele_acte_engagement}</td>
-                            <td>{list[0].modele_declaration_honneur}</td>
+                            <td>{list[0].numero_rc}</td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].cvpromoteur}`}>cv.pdf</a></td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].cahier_prestation_speciale}`}>cahier_prestation_speciale.pdf</a></td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].bordereau_prix_detail_estimatif}`}>bordereau_prix_detail_estimatif.pdf</a></td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].present_reglement_consultation}`}>present_reglement_consultation.pdf</a></td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].modele_acte_engagement}`}>modele_acte_engagement.pdf</a></td>
+                            <td><a href={`https://ipfs.infura.io/ipfs/${list[0].modele_declaration_honneur}`}>modele_declaration_honneur.pdf</a></td>
                             
                     </tr>
                     
@@ -178,4 +230,5 @@ class listeprojets extends Component {
     }
 }
 
-export default listeprojets
+export default ListeCandidature
+

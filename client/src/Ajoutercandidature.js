@@ -13,7 +13,9 @@ import ImageUploader from 'react-images-upload';
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import axios from 'axios';
+const ipfsClient = require('ipfs-api')
+// connect to ipfs daemon API server
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 class Ajoutercandidature extends Component {
     state = {
@@ -25,7 +27,20 @@ class Ajoutercandidature extends Component {
         bordereau_prix_detail_estimatif:null,
         present_reglement_consultation:null,
         modele_acte_engagement: null,
-        modele_declaration_honneur : null
+        modele_declaration_honneur : null,
+        cvpromoteur : null,
+        buffercahier_prestation_speciale  : null,
+        bufferbordereau_prix_detail_estimatif  : null,
+        bufferpresent_reglement_consultation  : null,
+        buffermodele_acte_engagement  : null,
+        buffermodele_declaration_honneur  : null,
+        buffercvpromoteur  : null,
+        cvpromoteur  : null,
+        modele_declaration_honneur  : null,
+        modele_acte_engagement  : null,
+        present_reglement_consultation  : null,
+        bordereau_prix_detail_estimatif  : null,
+        cahier_prestation_speciale  : null
       
     }
      
@@ -99,63 +114,56 @@ class Ajoutercandidature extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    ajouterprojet = async (e) => {
+    ajoutercandidature = async (e) => {
         const {accounts,promoteur,cahier_prestation_speciale,bordereau_prix_detail_estimatif,present_reglement_consultation,modele_acte_engagement,modele_declaration_honneur} = this.state
         e.preventDefault()
 
       /* cahier_prestation_speciale */
-      const data1 =  new FormData()
-      data1.append('file', this.state.cahier_prestation_speciale)
-      axios.post("http://localhost:8000/upload", data1, { 
-        // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+      if (this.state.buffercahier_prestation_speciale){
+        const file = await ipfs.add(this.state.buffercahier_prestation_speciale)
+        this.state.cahier_prestation_speciale = file[0]["hash"]
+        console.log(this.state.cahier_prestation_speciale)
+      }
        /* bordereau_prix_detail_estimatif */
-      const data2 = new FormData()
-      data2.append('file', this.state.bordereau_prix_detail_estimatif)
-      axios.post("http://localhost:8000/upload", data2, { 
-          // receive two    parameter endpoint url ,form data
-        })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+       if (this.state.bufferbordereau_prix_detail_estimatif){
+        const file = await ipfs.add(this.state.bufferbordereau_prix_detail_estimatif)
+        this.state.bordereau_prix_detail_estimatif = file[0]["hash"]
+        console.log(this.state.bordereau_prix_detail_estimatif)
+      }
       
       /* present_reglement_consultation */
-      const data3 = new FormData()
-      data3.append('file', this.state.present_reglement_consultation)
-      axios.post("http://localhost:8000/upload", data3, { 
-             // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+      if (this.state.bufferpresent_reglement_consultation){
+        const file = await ipfs.add(this.state.bufferpresent_reglement_consultation)
+        this.state.present_reglement_consultation = file[0]["hash"]
+        console.log(this.state.present_reglement_consultation)
+      }
       /* modele_acte_engagement */
-      const data4 = new FormData()
-      data4.append('file', this.state.modele_acte_engagement)
-      axios.post("http://localhost:8000/upload", data4, { 
-          // receive two    parameter endpoint url ,form data
-        })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+      if (this.state.buffermodele_acte_engagement){
+        const file = await ipfs.add(this.state.buffermodele_acte_engagement)
+        this.state.modele_acte_engagement = file[0]["hash"]
+        console.log(this.state.modele_acte_engagement)
+      }
     /* modele_declaration_honneur */
-      const data6 = new FormData()
-      data6.append('file', this.state.modele_declaration_honneur)
-      axios.post("http://localhost:8000/upload", data6, { 
-                // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
-      
-        var _cahier_prestation_speciale = cahier_prestation_speciale.name
-        var _bordereau_prix_detail_estimatif = bordereau_prix_detail_estimatif.name
-        var _present_reglement_consultation = present_reglement_consultation.name
-        var _modele_acte_engagement = modele_acte_engagement.name
-        var _modele_declaration_honneur = modele_declaration_honneur.name
+    if (this.state.buffermodele_declaration_honneur){
+      const file = await ipfs.add(this.state.buffermodele_declaration_honneur)
+      this.state.modele_declaration_honneur = file[0]["hash"]
+      console.log(this.state.modele_declaration_honneur)
+    }
+      /* cvpromoteur */
+      if (this.state.buffercvpromoteur){
+        const file = await ipfs.add(this.state.buffercvpromoteur)
+        this.state.cvpromoteur = file[0]["hash"]
+        console.log(this.state.cvpromoteur)
+      }
 
+
+        var _cahier_prestation_speciale = this.state.cahier_prestation_speciale
+        var _bordereau_prix_detail_estimatif = this.state.bordereau_prix_detail_estimatif
+        var _present_reglement_consultation = this.state.present_reglement_consultation
+        var _modele_acte_engagement = this.state.modele_acte_engagement
+        var _modele_declaration_honneur = this.state.modele_declaration_honneur
+        var _cvpromoteur = this.state.cvpromoteur
+        
         var nb =  await promoteur.methods.listecandidature().call()
         var existe = false
         for (var i=0; i < nb; i++) {
@@ -165,49 +173,87 @@ class Ajoutercandidature extends Component {
           } 
         }
         if(existe == false){
-          var result = await promoteur.methods.ajoutercandidature(localStorage.getItem('refdetails'),accounts[0],_cahier_prestation_speciale,_bordereau_prix_detail_estimatif,_present_reglement_consultation,_modele_acte_engagement,_modele_declaration_honneur).send({from: accounts[0]})
+          console.log(localStorage.getItem('refdetails'))
+          var nb =  await promoteur.methods.listepromoteur().call()
+          var _numero_rc = 0
+          for (var i=0; i < nb; i++) {
+            const wallet = await promoteur.methods.getwalletAddress(i).call()
+            if(accounts[0] == wallet){
+              _numero_rc = await promoteur.methods.getnumero_rc(i).call()
+            }
+          }
+          var result = await promoteur.methods.ajoutercandidature(_numero_rc,localStorage.getItem('refdetails'),_cvpromoteur,accounts[0],_cahier_prestation_speciale,_bordereau_prix_detail_estimatif,_present_reglement_consultation,_modele_acte_engagement,_modele_declaration_honneur).send({from: accounts[0]})
           alert("Candidature ajouté")
-          this.props.history.push("/ListeCandidature");
-        }
-        else {
-          alert("Produit déja existe")
-        }
+          this.props.history.push("/promoteurcandidature");
+          }
+          else {
+            alert("Projet déja existe")
+          }
           
     }
  
     onChangeHandlermodele_declaration_honneur=event=>{
-      this.setState({
-        modele_declaration_honneur: event.target.files[0],
-        loaded: 0,
-      })
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffermodele_declaration_honneur : Buffer.from(reader.result)})
+      }
     }
     onChangeHandlermodele_acte_engagement=event=>{
-      this.setState({
-        modele_acte_engagement: event.target.files[0],
-        loaded: 0,
-      })
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffermodele_acte_engagement : Buffer.from(reader.result)})
+      }
     }
     onChangeHandlerpresent_reglement_consultation=event=>{
-      this.setState({
-        present_reglement_consultation: event.target.files[0],
-        loaded: 0,
-      })
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferpresent_reglement_consultation : Buffer.from(reader.result)})
+      }
     }
   
     onChangeHandlerbordereau_prix_detail_estimatif=event=>{
-      this.setState({
-        bordereau_prix_detail_estimatif: event.target.files[0],
-        loaded: 0,
-      })
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferbordereau_prix_detail_estimatif : Buffer.from(reader.result)})
+      }
     }
   
     onChangeHandlercahier_prestation_speciale=event=>{
-      this.setState({
-        cahier_prestation_speciale: event.target.files[0],
-        loaded: 0,
-      })  
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffercahier_prestation_speciale : Buffer.from(reader.result)})
+      }  
     }
-  
+    onChangeHandlercvpromoteur=event=>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffercvpromoteur: Buffer.from(reader.result)})
+      } 
+    }
     render() {
 
       const {
@@ -229,7 +275,9 @@ class Ajoutercandidature extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+            {localStorage.getItem('ispromoteur') != 'true' &&
+             this.props.history.push("/Loginpromoteur")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -239,7 +287,7 @@ class Ajoutercandidature extends Component {
             }
            
           <div className="Login">
-            <form enctype ="multipart/form-data" onSubmit={(e) => this.ajouterprojet(e)}>
+            <form enctype ="multipart/form-data" onSubmit={(e) => this.ajoutercandidature(e)}>
             <h3>Candidature:</h3>
             <FormGroup controlId="cahier_prestation_speciale" bsSize="large">
               <FormLabel>cahier_prestation_speciale</FormLabel>
@@ -277,7 +325,13 @@ class Ajoutercandidature extends Component {
                 type="file"
               />
             </FormGroup>
-            
+            <FormGroup controlId="cvpromoteur" bsSize="large">
+              <FormLabel>cv</FormLabel>
+              <FormControl
+                onChange={this.onChangeHandlercvpromoteur}
+                type="file"
+              />
+            </FormGroup>
               <LoaderButton
               block
               bsSize="large"

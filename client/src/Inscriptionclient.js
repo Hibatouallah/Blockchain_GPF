@@ -16,11 +16,14 @@ import ReactPhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import axios from 'axios';
 
+const ipfsClient = require('ipfs-api')
+// connect to ipfs daemon API server
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+
 class Inscriptionclient extends Component {
 
     constructor(props) {
         super(props);
-    
         this.state = {
           isLoading: false,
           nom_prenom: "",
@@ -33,16 +36,15 @@ class Inscriptionclient extends Component {
           password: "",
           passwordconfirmation: "",
           confirmationCode: "",
-          newUser: null
+          newUser: null,
+          buffer : null,
+          web3: null,
+          accounts: null,
+          chainid: null,
+          client : null
         };
       }
 
-    state = {
-        web3: null,
-        accounts: null,
-        chainid: null,
-        client : null
-    }
     validateForm() {
         return (
           this.state.nom_prenom.length > 0 &&
@@ -108,11 +110,15 @@ class Inscriptionclient extends Component {
           </form>
         );
       }
-      onChangeHandlerimage=event=>{
-        this.setState({
-          image: event.target.files[0],
-          loaded: 0,
-        })
+      onChangeHandlerimage= (event)=>{
+        event.preventDefault()
+          //Process file for IPFS ....
+          const file = event.target.files[0]
+          const reader = new window.FileReader()
+          reader.readAsArrayBuffer(file)
+          reader.onloadend = () => {
+              this.setState({buffer : Buffer.from(reader.result)})
+          }
       }
       renderForm() {
         return (
@@ -290,15 +296,14 @@ class Inscriptionclient extends Component {
     InscriptionClient = async (e) => {
         const {accounts,client,image,nom_prenom,cin,date_naissance,numtele,adresse,email,password} = this.state
         e.preventDefault()
-        const data2 = new FormData()
-        data2.append('file', this.state.image)
-        axios.post("http://localhost:8000/upload", data2, { 
-            // receive two    parameter endpoint url ,form data
-          })
-        .then(res => { // then print response status
-            console.log(res.statusText)
-        })
-        var _image = image.name
+        console.log("Submitting File .....")
+        if (this.state.buffer){
+            const file = await ipfs.add(this.state.buffer)
+            this.state.imageHash = file[0]["hash"]
+            console.log(this.state.imageHash)
+          
+        }
+        var _image = this.state.imageHash
         var _nom_prenom = nom_prenom
         var _cin = cin
         var _date_naissance = date_naissance
@@ -306,9 +311,27 @@ class Inscriptionclient extends Component {
         var _adresse = adresse
         var _email = email
         var _password = password
-
-        var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
-        this.props.history.push("/Loginclient");   
+        var nbclient = await client.methods.listeclient().call()
+        if(nbclient == 0){
+          var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+          this.props.history.push("/Loginclient");
+        }
+        else{
+          for(var i = 0;i<nbclient;i++){
+            var wallet = await client.methods.getwalletAddress(i).call()
+            if(wallet == accounts[0])
+              {
+                alert('Compte déja existe')
+                this.props.history.push("/Loginclient");
+              }
+              else{
+                var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+                this.props.history.push("/Loginclient"); 
+              }
+          }
+        }
+       
+          
     }
 
     render() {

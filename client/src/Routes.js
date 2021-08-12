@@ -41,7 +41,21 @@ import clientajoutcontratsmorabaha from "./clientajoutcontratsmorabaha"
 import clientajoutcontratijara from "./clientajoutcontratijara"
 import clientajoutcontratvente from "./clientajoutcontratvente"
 import mesprojetsclients from "./mesprojetsclients"
-
+import test from "./test"
+import Modifierclientinfos from "./Modifierclientinfos"
+import Modifierclientimage from "./Modifierclientimage"
+import notificationFonds from "./notificationFonds"
+import fondsmodifiercontratijara from "./fondsmodifiercontratijara"
+import fondsmodifiercontratmourabaha from "./fondsmodifiercontratmourabaha"
+import fondsmodifiercontratvente from "./fondsmodifiercontratvente"
+import fondsmodifiercontratistisnaa from "./fondsmodifiercontratistisnaa"
+import notificationPromoteur from "./notificationPromoteur"
+import notificationClient from "./notificationClient"
+import engagementdefinitif_promo from "./engagementdefinitif_promo"
+import listepromoteurengageme from "./listepromoteurengageme"
+import promoteurcandidature from "./promoteurcandidature"
+import listeprojetsencours from "./listeprojetsencours"
+import listetotalprojets from "./listetotalprojets"
 export default ({ childProps }) =>
   <Switch>
     { /* routes */ }
@@ -49,6 +63,7 @@ export default ({ childProps }) =>
     <AppliedRoute path="/login" exact component={login} props={childProps} />
     <AppliedRoute path="/Inscription" exact component={Inscription} props={childProps} />
     <AppliedRoute path="/detailprojet" exact component={Detailprojet} props={childProps} />
+    <AppliedRoute path="/test" exact component={test} props={childProps} />
 
     { /* routes promoteur*/ }
     <AppliedRoute path="/Homepromoteur" exact component={Homepromoteur} props={childProps} />
@@ -56,10 +71,13 @@ export default ({ childProps }) =>
     <AppliedRoute path="/InscriptionPromoteur" exact component={InscriptionPromoteur} props={childProps} />
     <AppliedRoute path="/ProfilePromoteur" exact component={ProfilePromoteur} props={childProps} />
     <AppliedRoute path="/Ajoutercandidature" exact component={Ajoutercandidature} props={childProps} />
-    <AppliedRoute path="/ListeCandidature" exact component={ListeCandidature} props={childProps} />
     <AppliedRoute path="/Listewishlist" exact component={Listewishlist} props={childProps} />
     <AppliedRoute path="/Listeprojetspromoteur" exact component={Listeprojetspromoteur} props={childProps} />
     <AppliedRoute path="/Ajouterwishlist" exact component={Ajouterwishlist} props={childProps} />
+    <AppliedRoute path="/notificationPromoteur" exact component={notificationPromoteur} props={childProps} />
+    <AppliedRoute path="/promoteurcandidature" exact component={promoteurcandidature} props={childProps} />
+    
+    
     { /* routes fonds*/ }
     <AppliedRoute path="/Homefonds" exact component={Homefonds} props={childProps} />
     <AppliedRoute path="/Loginfonds" exact component={Loginfonds} props={childProps} />
@@ -78,6 +96,17 @@ export default ({ childProps }) =>
     <AppliedRoute path="/listecontratvente" exact component={listecontratvente} props={childProps} />
     <AppliedRoute path="/listecontratistisnaa" exact component={listecontratistisnaa} props={childProps} />
     <AppliedRoute path="/listecontrats" exact component={listecontrats} props={childProps} />
+    <AppliedRoute path="/notificationFonds" exact component={notificationFonds} props={childProps} />
+    <AppliedRoute path="/fondsmodifiercontratijara" exact component={fondsmodifiercontratijara} props={childProps} />
+    <AppliedRoute path="/fondsmodifiercontratmourabaha" exact component={fondsmodifiercontratmourabaha} props={childProps} />
+    <AppliedRoute path="/fondsmodifiercontratvente" exact component={fondsmodifiercontratvente} props={childProps} />
+    <AppliedRoute path="/fondsmodifiercontratistisnaa" exact component={fondsmodifiercontratistisnaa} props={childProps} />
+    <AppliedRoute path="/engagementdefinitif_promo" exact component={engagementdefinitif_promo} props={childProps} />
+    <AppliedRoute path="/listepromoteurengageme" exact component={listepromoteurengageme} props={childProps} />
+    <AppliedRoute path="/ListeCandidature" exact component={ListeCandidature} props={childProps} />
+    <AppliedRoute path="/listeprojetsencours" exact component={listeprojetsencours} props={childProps} />
+    <AppliedRoute path="/listetotalprojets" exact component={listetotalprojets} props={childProps} />
+    
     { /* routes client*/ }
     <AppliedRoute path="/Loginclient" exact component={Loginclient} props={childProps} />
     <AppliedRoute path="/Inscriptionclient" exact component={Inscriptionclient} props={childProps} />
@@ -88,6 +117,9 @@ export default ({ childProps }) =>
     <AppliedRoute path="/clientajoutcontratijara" exact component={clientajoutcontratijara} props={childProps} />
     <AppliedRoute path="/clientajoutcontratvente" exact component={clientajoutcontratvente} props={childProps} />
     <AppliedRoute path="/mesprojetsclients" exact component={mesprojetsclients} props={childProps} />
+    <AppliedRoute path="/Modifierclientinfos" exact component={Modifierclientinfos} props={childProps} />
+    <AppliedRoute path="/Modifierclientimage" exact component={Modifierclientimage} props={childProps} />
+    <AppliedRoute path="/notificationClient" exact component={notificationClient} props={childProps} />
     { /* Finally, catch all unmatched routes */ }
     <Route component={NotFound} />
   </Switch>

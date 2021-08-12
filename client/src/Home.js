@@ -50,13 +50,13 @@ componentDidMount = async () => {
       this.setState({nbprojet:nb})
       for (var i=0; i < nb; i++) {
         const ref = await fonds.methods.getRef(i).call()
-        const cout = await fonds.methods.getCout_estimation_travaux(i).call()
         const type = await fonds.methods.gettype_projet(i).call()
         const local = await fonds.methods.getlocalisation(i).call()
         const img = await fonds.methods.getimage(i).call()
+        const montant = await fonds.methods.getMontant_caution_provisoire(i).call()
         const list =[{
           references: ref, 
-          couts_estimation_travaux: cout, 
+          montant_caution_provisoire: montant, 
           localisation: local,
           type_projet :type,
           image : img
@@ -122,22 +122,20 @@ moredetails = (ref) => {
           
         <Slider />
         <Container>
-        
           <Row>
-          
           {this.state.listeprojet.map((list) =>
-     
           <Col  md={4}>
  
             <MDBCard style={{ maxWidth: '22rem' }}>
               <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
-                <MDBCardImage className="image" src={list[0].image} position='top' alt='...' />
+                <MDBCardImage className="image" src={`https://ipfs.infura.io/ipfs/${list[0].image}`} position='top' alt='...' />
               </MDBRipple>
               <MDBCardBody>
                 <MDBCardTitle>{list[0].references}</MDBCardTitle>
                 <MDBCardText>
                 <p><b>Localisation:</b>{list[0].localisation}</p>
                       <p><b>Type du projet :</b>{list[0].type_projet}</p>
+                      <p  class = "classp" ><b>{list[0].montant_caution_provisoire} DH</b></p>
                 </MDBCardText>
                 <MDBBtn className = "classbtn" onClick={() => this.moredetails(list[0].references)}>Plus de detail</MDBBtn>
               </MDBCardBody>

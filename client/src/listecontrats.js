@@ -24,6 +24,9 @@ class listecontrats extends Component {
     render() {
         return (
             <div className="Login">
+                 {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+            }
                 <center>
           <Container>
             <Row className="justify-content-md-center">

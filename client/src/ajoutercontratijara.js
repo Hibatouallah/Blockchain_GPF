@@ -26,18 +26,15 @@ class ajoutercontratvente extends Component {
         montant_loyer : "",
         date_resuliation : "",
         cession_du_bien : "",
-        typepaiement :  "",
         montantpartranche : "",
     }
   
     validateForm() {
         return (
-          this.state.referenceprojet.length > 0 &&
           this.state.duree_contrat.length > 0 &&
           this.state.montant_loyer.length > 0 &&
           this.state.date_resuliation.length > 0 &&
           this.state.cession_du_bien.length > 0 &&
-          this.state.typepaiement.length > 0 &&
           this.state.montantpartranche.length > 0 
         );
       }
@@ -113,20 +110,18 @@ class ajoutercontratvente extends Component {
     }
 
     ajoutercontrat = async (e) => {
-        const {accounts,EngagementClient,referenceprojet,duree_contrat,montant_loyer,date_resuliation,cession_du_bien,typepaiement,montantpartranche} = this.state
+        const {accounts,EngagementClient,duree_contrat,montant_loyer,date_resuliation,cession_du_bien,montantpartranche} = this.state
         e.preventDefault()
-        var _referenceprojet = referenceprojet
+        var _referenceprojet = localStorage.getItem('reference')
         var _duree_contrat = duree_contrat
         var _montant_loyer = montant_loyer
         var _date_resuliation = date_resuliation
         var _cession_du_bien = cession_du_bien
-        var _typepaiement = typepaiement
         var _montantpartranche = montantpartranche
 
-     
-          var result = await EngagementClient.methods.ajouterijaramontahiyabitamlik_fonds(_referenceprojet,_duree_contrat,_montant_loyer,_date_resuliation,_cession_du_bien,_typepaiement,_montantpartranche).send({from: accounts[0]})
-          alert("Contrat ijara ajouté")
-          this.props.history.push("/listecontratijara");
+        var result = await EngagementClient.methods.ajouterijaramontahiyabitamlik_fonds(_referenceprojet,_duree_contrat,_montant_loyer,_date_resuliation,_cession_du_bien,_montantpartranche).send({from: accounts[0]})
+        alert("Contrat ijara ajouté")
+        this.props.history.push("/listecontratijara");
   
     }
 
@@ -151,7 +146,9 @@ class ajoutercontratvente extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -172,7 +169,9 @@ class ajoutercontratvente extends Component {
                 autoFocus
                 type="text"
                 name="referenceprojet"
+                value={localStorage.getItem('reference')}
                 onChange={(e) => this.setState({referenceprojet: e.target.value})}
+                readOnly
               />
             </FormGroup>
             <FormGroup as={Col} controlId="duree_contrat" bsSize="large" readOnly>
@@ -215,17 +214,6 @@ class ajoutercontratvente extends Component {
                 name = "cession_du_bien "
               />
             </FormGroup>
-            <FormGroup as={Col} controlId="typepaiement" bsSize="large" readOnly>
-              <FormLabel>Date de resuliation </FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                onChange={(e) => this.setState({typepaiement : e.target.value})}
-                name = "typepaiement"
-              />
-            </FormGroup>
-            </Form.Row>
-            <Form.Row>
             <FormGroup as={Col} controlId="montantpartranche " bsSize="large" readOnly>
               <FormLabel>montantpartranche  </FormLabel>
               <FormControl
@@ -235,9 +223,8 @@ class ajoutercontratvente extends Component {
                 name = "montantpartranche"
               />
             </FormGroup>
-            <FormGroup as={Col} controlId="montantpartranche " bsSize="large" readOnly>
-            </FormGroup>
             </Form.Row>
+            
               <Button
               block
               bsSize="large"

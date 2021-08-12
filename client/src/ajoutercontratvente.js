@@ -28,8 +28,6 @@ class ajoutercontratvente extends Component {
   
     validateForm() {
         return (
-          
-          this.state.referenceprojet.length > 0 &&
           this.state.datecontrat .length > 0 &&
           this.state.prixvente.length > 0 
         );
@@ -106,9 +104,9 @@ class ajoutercontratvente extends Component {
     }
 
     ajoutercontrat = async (e) => {
-        const {accounts,EngagementClient,referenceprojet,datecontrat,prixvente,mini_hopital,supermarche,hamam,mini_mosque,pharmacie,image,imagesec1,imagesec2,imagesec3,descriptif,reference,cout_estimation_travaux,delai_execution,montant_caution_provisoire,duree_validite_offre,mesures_securites_hygiene,reception_provisoire_travaux,reception_definitive,cahier_prestations_techniques,normes_mise_en_oeuvre,localisation,superficier,type_projet,nb_chambre,terasse,garage,piscine,etage} = this.state
+        const {accounts,EngagementClient,datecontrat,prixvente,mini_hopital,supermarche,hamam,mini_mosque,pharmacie,image,imagesec1,imagesec2,imagesec3,descriptif,reference,cout_estimation_travaux,delai_execution,montant_caution_provisoire,duree_validite_offre,mesures_securites_hygiene,reception_provisoire_travaux,reception_definitive,cahier_prestations_techniques,normes_mise_en_oeuvre,localisation,superficier,type_projet,nb_chambre,terasse,garage,piscine,etage} = this.state
         e.preventDefault()
-        var _referenceprojet = referenceprojet
+        var _referenceprojet = localStorage.getItem('reference')
         var _datecontrat = datecontrat
         var _prixvente = prixvente
       
@@ -139,7 +137,9 @@ class ajoutercontratvente extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -160,7 +160,9 @@ class ajoutercontratvente extends Component {
                 autoFocus
                 type="text"
                 name="referenceprojet"
+                value={localStorage.getItem('reference')}
                 onChange={(e) => this.setState({referenceprojet: e.target.value})}
+                readOnly
               />
             </FormGroup>
             <FormGroup as={Col} controlId="datecontrat " bsSize="large" readOnly>

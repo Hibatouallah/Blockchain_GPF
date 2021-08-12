@@ -2,7 +2,8 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Container,Row,Col,Table} from "react-bootstrap"
+import { Container,Row,Col,Table,Image} from "react-bootstrap"
+import updateicon from './img/update.png'
 
 class listecontratijara extends Component {
     state = {
@@ -45,21 +46,20 @@ class listecontratijara extends Component {
         this.setState({nbcontrat:nb})
        
         for (var i=0; i < nb; i++) {
-        const cin = await EngagementClient.methods.getcinclient(i).call()
-        const reference = await EngagementClient.methods.getreferenceprojet(i).call()
-        const date= await EngagementClient.methods.getestimationpenalite(i).call()
-        const cession = await EngagementClient.methods.getcoutderevien(i).call()
-        const type = await EngagementClient.methods.getmarge(i).call()
-        const montantpar = await EngagementClient.methods.getprixvente(i).call()
-        const montant_loy = await EngagementClient.methods.getmontantchoisi(i).call()
-        const duree_contra = await EngagementClient.methods.getduree_contrat(i).call()
+        const cin = await EngagementClient.methods.getcinclientijara(i).call()
+        const reference = await EngagementClient.methods.getreferenceprojetijara(i).call()
+        const date= await EngagementClient.methods.getdate_resuliation(i).call()
+        const cession = await EngagementClient.methods.getcession_du_bien(i).call()
+        const montantpar = await EngagementClient.methods.getmontantpartranche(i).call()
+        const montant_loy = await EngagementClient.methods.getmontant_loyer(i).call()
+        const duree_contra = await EngagementClient.methods.getduree_contratijara(i).call()
             
             const list =[{
+                num : i,
                 cinclient: cin, 
                 referenceprojet : reference,
                 date_resuliation : date,
                 cession_du_bien : cession,
-                typepaiement : type,
                 montantpartranche: montantpar, 
                 montant_loyer: montant_loy,
                 duree_contrat :duree_contra
@@ -67,7 +67,7 @@ class listecontratijara extends Component {
             this.setState({
                 listecontrat:[...this.state.listecontrat,list] 
             })
-       
+            console.log(this.state.listecontrat)
         }
     }
 
@@ -111,12 +111,11 @@ class listecontratijara extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    ajouter = async event => {
-        this.props.history.push("/ajouterprojet");
-      }
+ 
    
-    handleaddcontrats = async event => {
-        this.props.history.push("/ajouteravantcontrat");
+    handlemodifier = async(ref) => {
+        localStorage.setItem("referenceijara",ref)
+        this.props.history.push("/fondsmodifiercontratijara");
       }
 
 
@@ -141,7 +140,9 @@ class listecontratijara extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -159,16 +160,15 @@ class listecontratijara extends Component {
                 </Col>
             </Row>
             </Container>
-           <br/><br/>
-           <h3>Liste de contrats Ijara </h3>
+           <h3 class ='h3style'>Liste de contrats Ijara </h3>
             <Table responsive >
-                <thead>
+                <thead class="thead-dark">
                     <tr>
+                    <th>Action</th>
                     <th>cinclient</th>
                     <th>referenceprojet</th>
                     <th>date_resuliation</th>
                     <th>cession_du_bien</th>
-                    <th>typepaiement</th>
                     <th>montantpartranche</th>
                     <th>montant_loyer</th>
                     <th>duree_contrat</th>
@@ -178,11 +178,11 @@ class listecontratijara extends Component {
              
                 {this.state.listecontrat.map((list) =>
                     <tr>
+                            <td><Image onClick={() => this.handlemodifier(list[0].referenceprojet)} src={updateicon} roundedCircle /></td>
                             <td>{list[0].cinclient}</td>
                             <td>{list[0].referenceprojet}</td>
                             <td>{list[0].date_resuliation}</td>
                             <td>{list[0].cession_du_bien}</td>
-                            <td>{list[0].typepaiement}</td>
                             <td>{list[0].montantpartranche}</td>
                             <td>{list[0].montant_loyer}</td>
                             <td>{list[0].duree_contrat}</td>

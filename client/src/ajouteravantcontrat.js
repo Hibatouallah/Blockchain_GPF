@@ -25,6 +25,10 @@ class ajouteravantcontrat extends Component {
         
 
         return (
+            <>
+            {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             <div className="Login">
                 <center>
           <Container>
@@ -57,7 +61,7 @@ class ajouteravantcontrat extends Component {
         </Container>
         </center>
         </div>
-       )
+        </> )
     }
 }
 

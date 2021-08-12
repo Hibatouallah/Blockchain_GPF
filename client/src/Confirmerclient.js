@@ -23,6 +23,9 @@ class Confirmerclient extends Component {
         
         return (
             <div className="Login">
+                 {localStorage.getItem('isclient') != 'true' &&
+                    this.props.history.push("/Loginclient")
+                    }
                 <center>
                 <h3>Choisir le type de contrat :</h3>
                 <br/><br/>

@@ -144,6 +144,9 @@ class ProfilePromoteur extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
+            {localStorage.getItem('ispromoteur') != 'true' &&
+             this.props.history.push("/Loginpromoteur")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -158,7 +161,7 @@ class ProfilePromoteur extends Component {
                 <Row>
                 <Col xs={6} > 
                 <Card border="primary" style={{ width: '30rem' }}>
-                    <Card.Header><Image src={this.state.photo} fluid roundedCircle /></Card.Header>
+                    <Card.Header><Image src={`https://ipfs.infura.io/ipfs/${this.state.photo}`} fluid roundedCircle /></Card.Header>
                     <Card.Body>
                       <Card.Title><center><h5><b>Informations Personnelle</b></h5></center></Card.Title>
                       <Card.Text>

@@ -125,7 +125,10 @@ class Loginclient extends Component {
           const wallet = await client.methods.getwalletAddress(i).call()
           if(wallet == accounts[0])
           {
+                console.log(wallet)
+                console.log(accounts[0])
                 var result = await client.methods.authentification(i,_email,_password).call()
+                console.log(result)
                 if(result == "welcome"){
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('isclient', 'true');
@@ -133,9 +136,8 @@ class Loginclient extends Component {
                 }
                 else {
                     this.setState({ isLoading: false });
+                    alert ("invalide account")
                 }
-          }else{
-            alert ("invalide account")
           }
         }
         
@@ -161,7 +163,7 @@ class Loginclient extends Component {
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
-        return (<div className="signUpLoginBox">
+        return (<div className="container">
           
             {
                 !isAccountsUnlocked ?
@@ -173,6 +175,8 @@ class Loginclient extends Component {
             
             <br/>
         <div className="slContainer">
+        <div className ="formBoxLeftSignupClient"></div>
+                  <div className="formBoxRight">
             <form onSubmit={(e) => this.AuthentificationClient(e)}>
             <h3>S'Authentifier</h3>
             <FormGroup controlId="email" bsSize="large">
@@ -202,7 +206,7 @@ class Loginclient extends Component {
                 loadingText="Logging in…"
                 />
         </form>
-                
+        </div>     
         </div>
     </div>
   

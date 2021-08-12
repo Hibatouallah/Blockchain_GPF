@@ -325,15 +325,15 @@ footer {
 }
 
 .formBoxLeftSignupClient {
-  min-height: 500px;
-  background-image: url(img/inscriclient.png);
+  min-height: 100px;
+  background-image: url(img/iconfinder-3-avatar-2754579_120516.png);
   background-repeat: no-repeat;
   background-position: center center;
   flex: 0 1 50%;
 }
 .formBoxLeftSignupPromoteur {
-  min-height: 500px;
-  background-image: url(img/insc_promoteur.png);
+  min-height: 100px;
+  background-image: url(img/iconfinder-12-avatar-2754577_120517.png);
   background-repeat: no-repeat;
   background-position: center center;
   flex: 0 1 50%;
@@ -358,14 +358,7 @@ footer {
   flex: 0 1 50%;
 }
 
-.formBoxRight span {
-  display: block;
-  color: var(--red-color);
-  text-align: center;
-  border: 1px solid var(--red-color);
-  padding: 10px;
-  margin: 15px 0;
-}
+
 
 .formContent {
   width: 100%;
@@ -422,24 +415,7 @@ footer {
   font-style: italic;
 }
 
-/* Form buttons */
-.formContent button {
-  margin-left: 0;
-  display: block;
-  margin: 0 auto 20px;
-  min-width: 150px;
-  background-color: transparent;
-  color: var(--white-color);
-  padding: 7px;
-  font-size: 15px;
-  border-radius: 5px;
-}
 
-.formContent button:hover {
-  background-color: var(--red-color);
-  color: var(--white-color);
-  cursor: pointer;
-}
 
 button:disabled,
 button[disabled],
@@ -754,26 +730,7 @@ input:checked+.slider:before {
 }
 /* END QUIZOVER */
 
-/* SUBMIT BUTTON */
-.btnSubmit {
-  font-size: 16px;
-  padding: 6px;
-  background-color: var(--red-color);
-  color: var(--white-color);
-  border-color: var(--red-color);
-  border-radius: 5px;
-  width: 150px;
-  display: block;
-  margin: 0 auto;
-  cursor: pointer;
-}
 
-.selected {
-  background-color: var(--red-color);
-  color: var(--white-color);
-  text-transform: uppercase;
-}
-/* END SUBMIT BUTTON */
 
 /* MODAL */
 .modalBackground {
@@ -1001,4 +958,19 @@ input:checked+.slider:before {
 }
 .title{
   color: #ddd;
+}
+.h6style {
+  color :#00008B;
+}
+.h3style {
+  color :darkviolet;
+}
+button.badge {
+  background-color: #f04040;
+  border: none;
+  color: #ffffff;
+  width: 1.5rem;
+}
+.red{
+  color :#f04040;
 }

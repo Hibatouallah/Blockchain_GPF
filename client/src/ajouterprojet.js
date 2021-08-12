@@ -14,6 +14,9 @@ import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import axios from 'axios';
+const ipfsClient = require('ipfs-api')
+// connect to ipfs daemon API server
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 class ajouterprojet extends Component {
     state = {
@@ -52,8 +55,15 @@ class ajouterprojet extends Component {
         imagesec2: null,
         imagesec3: null,
         descriptif : "",
-        nb_client : 0
-      
+        nb_client : 0,
+        buffer : null,
+        bufferimage : null,
+        bufferimagesec1 : null,
+        bufferimagesec2 : null,
+        bufferimagesec3 : null,
+        buffermesure : null,
+        buffercahier : null,
+        buffernorme  : null
     }
   
     validateForm() {
@@ -156,102 +166,132 @@ class ajouterprojet extends Component {
         const {accounts,fonds,nb_client,jardin,balcon,mini_hopital,supermarche,hamam,mini_mosque,pharmacie,image,imagesec1,imagesec2,imagesec3,descriptif,reference,cout_estimation_travaux,delai_execution,montant_caution_provisoire,duree_validite_offre,mesures_securites_hygiene,reception_provisoire_travaux,reception_definitive,cahier_prestations_techniques,normes_mise_en_oeuvre,localisation,superficier,type_projet,nb_chambre,terasse,garage,piscine,etage} = this.state
         e.preventDefault()
 
+      /* Image pricipale */ 
+      if (this.state.bufferimage){
+          const file = await ipfs.add(this.state.bufferimage)
+          this.state.image = file[0]["hash"]
+          console.log(this.state.image)
         
-      /* Image pricipale */
-      const data1 =  new FormData()
-      data1.append('file', this.state.imagesec1)
-      axios.post("http://localhost:8000/upload", data1, { 
-        // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+      }
        /* Image secondaire 1 */
-      const data2 = new FormData()
-      data2.append('file', this.state.image)
-      axios.post("http://localhost:8000/upload", data2, { 
-          // receive two    parameter endpoint url ,form data
-        })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
-      
+       if (this.state.bufferimagesec1){
+        const file = await ipfs.add(this.state.bufferimagesec1)
+        this.state.imagesec1 = file[0]["hash"]
+        console.log(this.state.imagesec1)
+      }
       /* Image secondaire 2 */
-      const data3 = new FormData()
-      data3.append('file', this.state.imagesec2)
-      axios.post("http://localhost:8000/upload", data3, { 
-             // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
+      if (this.state.bufferimagesec2){
+        const file = await ipfs.add(this.state.bufferimagesec2)
+        this.state.imagesec2 = file[0]["hash"]
+        console.log(this.state.imagesec2)
+      }
       /* Image secondaire 3 */
-      const data4 = new FormData()
-      data4.append('file', this.state.imagesec3)
-      axios.post("http://localhost:8000/upload", data4, { 
-          // receive two    parameter endpoint url ,form data
-        })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
-    /* mesures_securites_hygiene */
-      const data6 = new FormData()
-      data6.append('file', this.state.mesures_securites_hygiene)
-      axios.post("http://localhost:8000/upload", data6, { 
-                // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-          console.log(res.statusText)
-      })
-      
+      if (this.state.bufferimagesec3){
+        const file = await ipfs.add(this.state.bufferimagesec3)
+        this.state.imagesec3 = file[0]["hash"]
+        console.log(this.state.imagesec3)
+      }
+      /* mesures_securites_hygiene */
+      if (this.state.buffermesure){
+        const file = await ipfs.add(this.state.buffermesure)
+        this.state.mesures_securites_hygiene = file[0]["hash"]
+        console.log(this.state.mesures_securites_hygiene)
+      }
       /* cahier_prestations_techniques */
-      const data7 = new FormData()
-      data7.append('file', this.state.cahier_prestations_techniques)
-      axios.post("http://localhost:8000/upload", data7, { 
-                  // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-        console.log(res.statusText)
-      })
-
+      if (this.state.buffercahier){
+        const file = await ipfs.add(this.state.buffercahier)
+        this.state.cahier_prestations_techniques = file[0]["hash"]
+        console.log(this.state.cahier_prestations_techniques)
+      }
       /* normes_mise_en_oeuvre */
-      const data8 = new FormData()
-      data8.append('file', this.state.normes_mise_en_oeuvre)
-      axios.post("http://localhost:8000/upload", data8, { 
-                  // receive two    parameter endpoint url ,form data
-      })
-      .then(res => { // then print response status
-        console.log(res.statusText)
-      })
+      if (this.state.buffernorme){
+        const file = await ipfs.add(this.state.buffernorme)
+        this.state.normes_mise_en_oeuvre = file[0]["hash"]
+        console.log(this.state.normes_mise_en_oeuvre)
+      }
         var _nb_client = nb_client
         var _reference= reference
         var _cout_estimation_travaux = cout_estimation_travaux
         var _delai_execution = parseInt(delai_execution)
         var _montant_caution_provisoire = montant_caution_provisoire
         var _duree_validite_offre = parseInt(duree_validite_offre)
-        var _mesures_securites_hygiene = mesures_securites_hygiene.name
-        var _reception_provisoire_travaux = reception_provisoire_travaux
-        var _cahier_prestations_techniques = cahier_prestations_techniques.name
-        var _normes_mise_en_oeuvre = normes_mise_en_oeuvre.name
+        var _mesures_securites_hygiene = this.state.mesures_securites_hygiene
+        var _reception_provisoire_travaux = this.state.reception_provisoire_travaux
+        var _cahier_prestations_techniques = this.state.cahier_prestations_techniques
+        var _normes_mise_en_oeuvre = this.state.normes_mise_en_oeuvre
         var _localisation = localisation
         var _superficier = superficier
         var _type_projet = type_projet
         var _nb_chambre = parseInt(nb_chambre)
+      
         var _terasse = terasse
         var _garage = garage
         var _piscine = piscine
         var _jardin = jardin
         var _balcon = balcon
         var _mini_hopital = mini_hopital
-        var _supermarche = supermarche
+        var _supermarche = supermarche 
         var _hamam = hamam
         var _mini_mosque = mini_mosque
         var _pharmacie = pharmacie
+        if (_terasse == "on"){
+          _terasse = "oui"
+        }else{
+          _terasse = "non"
+        }
+        if (_garage == "on"){
+          _garage = "oui"
+        }else{
+          _garage = "non"
+        }
+        if (_piscine == "on"){
+         _piscine = "oui"
+        }else{
+          _piscine = "non"
+        }
+        if (_jardin == "on"){
+          _jardin = "oui"
+        }else{
+          _jardin = "non"
+        }
+        if (_balcon == "on"){
+          _balcon = "oui"
+        }else{
+          _balcon = "non"
+        }
+        if (_mini_hopital == "on"){
+          _mini_hopital = "oui"
+        }else{
+          _mini_hopital = "non"
+        }
+       
+        if (_supermarche == "on"){
+          _supermarche = "oui"
+        }else{
+          _supermarche = "non"
+        }
+        if (_hamam == "on"){
+          _hamam = "oui"
+        }else{
+          _hamam = "non"
+        }
+       
+        if (_mini_mosque == "on"){
+          _mini_mosque = "oui"
+        }else{
+          _mini_mosque = "non"
+        }
+        if (_pharmacie == "on"){
+          _pharmacie = "oui"
+        }else{
+          _pharmacie = "non"
+        }
+        
         var _etage = parseInt(etage)
-        var _image = image.name
-        var _imagesec1 = imagesec1.name
-        var _imagesec2 = imagesec2.name
-        var _imagesec3 = imagesec3.name
+        var _image = this.state.image
+        var _imagesec1 = this.state.imagesec1
+        var _imagesec2 = this.state.imagesec2
+        var _imagesec3 = this.state.imagesec3
         var _descriptif = descriptif
 
         var nb =  await fonds.methods.listeprojet().call()
@@ -273,53 +313,78 @@ class ajouterprojet extends Component {
           
     }
  
-     onChangeHandlerimage=event=>{
-      this.setState({
-        image: event.target.files[0],
-        loaded: 0,
-      })
+     onChangeHandlerimage = (event)=>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferimage : Buffer.from(reader.result)})
+      }
     }
-    onChangeHandlerimagesec1=event=>{
-      this.setState({
-        imagesec1: event.target.files[0],
-        loaded: 0,
-      })
+    onChangeHandlerimagesec1= (event)=>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferimagesec1 : Buffer.from(reader.result)})
+      }
     }
-    onChangeHandlerimagesec2=event=>{
-      this.setState({
-        imagesec2: event.target.files[0],
-        loaded: 0,
-      })
+    onChangeHandlerimagesec2= (event)=>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferimagesec2 : Buffer.from(reader.result)})
+      }
     }
-    onChangeHandlerimagesec3=event=>{
-      this.setState({
-        imagesec3: event.target.files[0],
-        loaded: 0,
-      })
+    onChangeHandlerimagesec3= (event)=>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({bufferimagesec3 : Buffer.from(reader.result)})
+      }
     }
-    onChangeHandlermesures_securites_hygiene=event=>{
-      this.setState({
-        mesures_securites_hygiene: event.target.files[0],
-        loaded: 0,
-      })
+    onChangeHandlermesures_securites_hygiene= (event) =>{
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffermesure : Buffer.from(reader.result)})
+      }
     }
   
     onChangeHandlercahier_prestations_techniques=event=>{
-      this.setState({
-        cahier_prestations_techniques: event.target.files[0],
-        loaded: 0,
-      })
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffercahier : Buffer.from(reader.result)})
+      }
     }
   
     onChangeHandlernormes_mise_en_oeuvre=event=>{
-      this.setState({
-        normes_mise_en_oeuvre: event.target.files[0],
-        loaded: 0,
-      })  
+      event.preventDefault()
+      //Process file for IPFS ....
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+          this.setState({buffernorme : Buffer.from(reader.result)})
+      }  
     }
-    onClickHandler = () => {
-
-}
 
     render() {
 
@@ -342,7 +407,9 @@ class ajouterprojet extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to

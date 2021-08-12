@@ -2,8 +2,8 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Container,Row,Col,Table} from "react-bootstrap"
-
+import { Container,Row,Col,Table,Image} from "react-bootstrap"
+import updateicon from './img/update.png'
 class listecontratistisnaa extends Component {
     state = {
         web3: null,
@@ -114,7 +114,11 @@ class listecontratistisnaa extends Component {
     handleaddcontrats = async event => {
         this.props.history.push("/ajouteravantcontrat");
       }
-
+    
+    handlemodifier = async(ref) => {
+        localStorage.setItem("referenceistisnaa",ref)
+        this.props.history.push("/fondsmodifiercontratistisnaa");
+      }
 
     render() {
     
@@ -137,7 +141,9 @@ class listecontratistisnaa extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -147,19 +153,12 @@ class listecontratistisnaa extends Component {
             }
            
             <br/>
-            <Container>
-            <Row>
-                <Col xs={12} md={8}>
-                </Col>
-                <Col xs={6} md={4}>
-                </Col>
-            </Row>
-            </Container>
-           <br/><br/>
+        
            <h3>Liste de contrats Istisnaa </h3>
             <Table responsive >
-                <thead>
+                <thead class="thead-dark">
                     <tr>
+                    <th>Action</th>
                     <th>numero_rc</th>
                     <th>referenceprojet</th>
                     <th>date_commencement</th>
@@ -172,6 +171,7 @@ class listecontratistisnaa extends Component {
              
                 {this.state.listecontrat.map((list) =>
                     <tr>
+                            <td><Image onClick={() => this.handlemodifier(list[0].referenceprojet)} src={updateicon} roundedCircle /></td>
                             <td>{list[0].numero_rc}</td>
                             <td>{list[0].referenceprojet}</td>
                             <td>{list[0].date_commencement}</td>

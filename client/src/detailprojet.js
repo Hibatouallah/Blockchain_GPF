@@ -43,6 +43,7 @@ class detailprojet extends Component {
     imagesec2: null,
     imagesec3: null,
     descriptif : "",
+    
 }
 handleChangewishlistclient = async ()=>{
  
@@ -74,6 +75,7 @@ handleChangewishlistclient = async ()=>{
     const client = await this.loadContract("dev", "Client")
     var nb =  await client.methods.listewishlist().call()
     console.log(nb)
+    var existe = 'true'
     if(nb == 0){
           var today = new Date(),
           date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -84,14 +86,24 @@ handleChangewishlistclient = async ()=>{
     }else{
       for (var i=0; i < nb; i++) {
         const ref = await client.methods.getreferencewishlist(i).call()
-        if(ref != localStorage.getItem('refdetails'))
+        const wallet = await client.methods.getwalletAddresswishlist(i).call()
+        console.log(wallet)
+        console.log(localStorage.getItem('refdetails'))
+        if((localStorage.getItem('refdetails') != ref && wallet != accounts[0]) || (localStorage.getItem('refdetails') == ref && wallet != accounts[0]))
+        {
+          existe = 'false'
+        }
+        console.log(existe)
+      }
+        if(existe == 'false')
         {
           var today = new Date(),
           date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-          var result = await client.methods.ajouterwishlist(localStorage.getItem('refdetails'),accounts[0],date).call()
+          var result = await client.methods.ajouterwishlist(localStorage.getItem('refdetails'),accounts[0],date).send({from: accounts[0]})
+          alert(result)
           this.props.history.push("/Listewishlistclient");
         }
-      }
+      
 }
 
 }
@@ -176,9 +188,11 @@ componentDidMount = async () => {
           accounts,
           chainid
       }, await this.loadInitialContracts)
+      
       const fonds = await this.loadContract("dev", "Fonds")
       var nb =  await fonds.methods.listeprojet().call()
       this.setState({nbprojet:nb})
+     
       for (var i=0; i < nb; i++) {
         const ref = await fonds.methods.getRef(i).call()
         if(ref == localStorage.getItem('refdetails'))
@@ -202,67 +216,18 @@ componentDidMount = async () => {
             const sec2 = await fonds.methods.getimagedet2(i).call()
             const sec3 = await fonds.methods.getimagedet3(i).call()
             const etag = await fonds.methods.getetage(i).call()
+
             var ter = await fonds.methods.getterasse(i).call()
-            if (ter == "on"){
-              ter = "oui"
-            }else{
-              ter = "non"
-            }
             var gara = await fonds.methods.getgarage(i).call()
-            if (gara == "on"){
-              gara = "oui"
-            }else{
-              gara = "non"
-            }
             var piscin = await fonds.methods.getpiscine(i).call()
-            if (piscin == "on"){
-              piscin = "oui"
-            }else{
-              piscin = "non"
-            }
-        
             var balco = await fonds.methods.getbalcon(i).call()
-            if (balco == "on"){
-              balco = "oui"
-            }else{
-              balco = "non"
-            }
             var mini_hopita = await fonds.methods.getmini_hopital(i).call()
-            if (mini_hopita == "on"){
-              mini_hopita = "oui"
-            }else{
-              mini_hopita = "non"
-            }
             var supermarch = await fonds.methods.getsupermarche(i).call()
-            if (supermarch == "on"){
-              supermarch = "oui"
-            }else{
-              supermarch = "non"
-            }
             var hama = await fonds.methods.gethamam(i).call()
-            if (hama == "on"){
-              hama = "oui"
-            }else{
-              hama = "non"
-            }
             var mini_mosqu = await fonds.methods.getmini_mosque(i).call()
-            if (mini_mosqu == "on"){
-              mini_mosqu = "oui"
-            }else{
-              mini_mosqu = "non"
-            }
             var pharmaci = await fonds.methods.getpharmacie(i).call()
-            if (pharmaci == "on"){
-              pharmaci = "oui"
-            }else{
-              pharmaci = "non"
-            }
             var jardi = await fonds.methods.getpharmacie(i).call()
-            if (jardi == "on"){
-              jardi = "oui"
-            }else{
-              jardi = "non"
-            }
+           
             this.setState({
               references: ref, 
               image : img,
@@ -294,6 +259,7 @@ componentDidMount = async () => {
               mini_mosque : mini_mosqu,
               pharmacie : pharmaci,
               jardin : jardi,
+             
             })
         }
       }  
@@ -365,10 +331,10 @@ loadContract = async (chain, contractName) => {
           <br/><br/>
               <center>
                 <AwesomeSlider className="slider" >
-                  <div data-src={this.state.image} />
-                  <div data-src={this.state.imagesec1} />
-                  <div data-src={this.state.imagesec2} />
-                  <div data-src={this.state.imagesec3} />
+                  <div data-src={`https://ipfs.infura.io/ipfs/${this.state.image}`}/>
+                  <div data-src={`https://ipfs.infura.io/ipfs/${this.state.imagesec1}`}/>
+                  <div data-src={`https://ipfs.infura.io/ipfs/${this.state.imagesec2}`}/>
+                  <div data-src={`https://ipfs.infura.io/ipfs/${this.state.imagesec3}`}/>
                 </AwesomeSlider>
                 </center>
                 {/* 
@@ -393,7 +359,7 @@ loadContract = async (chain, contractName) => {
                      <Card.Body className="detailscard">
                       <Card.Title className="classp" ><b>Référence :{this.state.references}</b></Card.Title>
                       <Card.Text>
-                      <p ><b>Montant caution provisoire :</b>${this.state.montant_caution_provisoire}</p>
+                      <p ><b>Montant caution provisoire :</b>{this.state.montant_caution_provisoire} DH</p>
                       <p><b>Descriptif :</b> {this.state.descriptif}</p>
                       <p ><b>Superficier: </b>{this.state.superficier} DH</p>
                       <center>
@@ -421,8 +387,8 @@ loadContract = async (chain, contractName) => {
                       <p class = "classp"><b>Type de projet :</b> {this.state.type_projet}</p>
                       <p class = "classp"><b>Localisation :</b> {this.state.localisation}</p>
                       <p class = "classp"><b>Cout d'estimation des travaux : </b>{this.state.couts_estimation_travaux} DH</p>
-                      <p class = "classp"><b>Delai d'execution :</b> {this.state.delai_execution}</p>
-                      <p class = "classp"><b>Durée de validité d'offre :</b> {this.state.duree_validite_offre}</p>
+                      <p class = "classp"><b>Delai d'execution :</b> {this.state.delai_execution} ans</p>
+                      <p class = "classp"><b>Durée de validité d'offre :</b> {this.state.duree_validite_offre} jours</p>
                       <p class = "classp"><b>reception provisoire des travaux :</b> {this.state.reception_provisoire_travaux} </p>
                       <p class = "classp" ><b>superficier :</b> {this.state.superficier}</p>
                       

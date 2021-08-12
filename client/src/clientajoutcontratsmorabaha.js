@@ -36,7 +36,8 @@ class clientajoutcontratsmorabaha extends Component {
         montant_semestriel :"",
         montant_annuel :"",
         nbcontrat:0,
-        nbclient : 0
+        nbclient : 0,
+        numcontrat :0
     }
   
     validateForm() {
@@ -121,7 +122,8 @@ for (var i=0; i < nb; i++) {
             montant_semestriel: montant_semestri,
             montant_annuel: montant_annue,
             assurancetakaful: assurancetakafu,
-            duree_contrat: duree_contra 
+            duree_contrat: duree_contra ,
+            numcontrat : i
         })
     }
 }
@@ -169,9 +171,10 @@ for (var i=0; i < nb; i++) {
     }
 
     modifiercontrat = async (e) => {
-        const {accounts,montantchoisi,engagementClient,duree_contrat,montant_Mensuelle,montant_trimestriel,montant_semestriel,montant_annuel,assurancetakaful,referenceprojet,estimationpenalite,coutderevien,marge,prixvente,duree_ammortissement} = this.state
+        const {accounts,montantchoisi,engagementClient,referenceprojet} = this.state
         e.preventDefault()
         const client = await this.loadContract("dev", "Client")
+        const fonds = await this.loadContract("dev", "Fonds")
         var nb =  await client.methods.listeclient().call()
         this.setState({nbclient:nb})
         var ci = ""
@@ -182,22 +185,51 @@ for (var i=0; i < nb; i++) {
           }
         }
         var _referenceprojet = referenceprojet
-        var _estimationpenalite= estimationpenalite
-        var _coutderevien = coutderevien
-        var _marge = marge
-        var _prixvente= prixvente
-        var _duree_ammortissement = duree_ammortissement
-        var _assurancetakaful = assurancetakaful
-        var _duree_contrat = duree_contrat
-        var _montant_Mensuelle = montant_Mensuelle
-        var _montant_trimestriel = montant_trimestriel
-        var _montant_semestriel = montant_semestriel
-        var _montant_annuel = montant_annuel
         var _montantchoisi = montantchoisi
-        
-          var result = await engagementClient.methods.modifiercontrat_morabaha_client(this.state.nbcontrat,_montantchoisi,ci,_referenceprojet,_estimationpenalite,_coutderevien,_marge,_prixvente,_duree_ammortissement,_montant_Mensuelle,_montant_trimestriel,_montant_semestriel,_montant_annuel,_assurancetakaful,_duree_contrat).send({from: accounts[0]})
-          this.props.history.push("/mesprojetsclients");
-
+       
+          var result = await engagementClient.methods.modifiercontrat_morabaha_client(this.state.numcontrat,_montantchoisi,ci,_referenceprojet).send({from: accounts[0]})
+          var nb =  await client.methods.listewishlist().call()
+          console.log(nb)
+          this.setState({nbwishlist:nb})
+          
+          for (var i=0; i < nb; i++) {
+             const wallet = await client.methods.getwalletAddress(i).call()
+             if(accounts[0] == wallet){
+              var reference = await client.methods.getreferencewishlist(i).call()
+              if(reference == _referenceprojet){
+                  var result = await client.methods.modifierwishlist(i).send({from: accounts[0]})
+                  var nbclientproje = 0
+                  // Calculer le percentage dees clients
+                  const nbprojet = await fonds.methods.listeprojet().call()
+                  for(var j = 0;j<nbprojet;j++)
+                  {
+                      //savoir le nombre de clients du projets
+                      const ref = await fonds.methods.getRef(j).call()
+                      if(ref == reference)
+                       {
+                         nbclientproje = await fonds.methods.getnb_client(j).call()
+                       }
+                  }
+                 //savoir le nombre de clients engagé
+                 const nblistclientengage= await engagementClient.methods.getlisteclientengage().call()
+                 var nbclientengage = 0
+                 for(var k=0;k<nblistclientengage;k++){
+                    var ref = await engagementClient.methods.getreferenceclient(k).call()
+                    if(ref == reference){
+                      nbclientengage++
+                    }
+                 }
+                  //savoir le percentage
+                  var percentage = (nbclientengage*100)/nbclientproje
+                  if(percentage >= 50)
+                  {
+                    var _message = "le percentage des clients engagés est 50% du projet avec la reference "+reference+"vous pouvez déclencher la procédure des travaux"
+                    var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                  }
+                  this.props.history.push("/mesprojetsclients");
+              }
+             }
+          }
     }
  
     render() {
@@ -221,7 +253,9 @@ for (var i=0; i < nb; i++) {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isclient') != 'true' &&
+             this.props.history.push("/Loginclient")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to

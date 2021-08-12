@@ -2,8 +2,8 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Container,Row,Col,Table} from "react-bootstrap"
-
+import { Container,Row,Col,Table,Image} from "react-bootstrap"
+import updateicon from './img/update.png'
 class listecontratijara extends Component {
     state = {
         web3: null,
@@ -109,7 +109,10 @@ class listecontratijara extends Component {
     handleaddcontrats = async event => {
         this.props.history.push("/ajouteravantcontrat");
       }
-
+    handlemodifier = async(ref) => {
+        localStorage.setItem("referencevente",ref)
+        this.props.history.push("/fondsmodifiercontratvente");
+      }
 
     render() {
     
@@ -132,7 +135,9 @@ class listecontratijara extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -150,11 +155,11 @@ class listecontratijara extends Component {
                 </Col>
             </Row>
             </Container>
-           <br/><br/>
-           <h3>Liste de contrats de vente </h3>
+           <h3 class ='h3style'>Liste de contrats de vente </h3>
             <Table responsive >
-                <thead>
+                <thead class="thead-dark">
                     <tr>
+                    <th>Action</th>
                     <th>cinclient</th>
                     <th>referenceprojet</th>
                     <th>datecontrat</th>
@@ -166,6 +171,7 @@ class listecontratijara extends Component {
              
                 {this.state.listecontrat.map((list) =>
                     <tr>
+                        <td><Image onClick={() => this.handlemodifier(list[0].referenceprojet)} src={updateicon} roundedCircle /></td>
                             <td>{list[0].cinclient}</td>
                             <td>{list[0].referenceprojet}</td>
                             <td>{list[0].datecontrat}</td>

@@ -3,7 +3,7 @@ import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import { Card,Container,Row,Image,Col,Button} from "react-bootstrap"
-
+import imagemodifier from './img/imagemodifier.png'; 
 
 class Profileclient extends Component {
 
@@ -119,8 +119,14 @@ class Profileclient extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-
-   
+    modifierclientinfos = (event) =>{
+        event.preventDefault()
+        this.props.history.push("/Modifierclientinfos")
+    }
+    modifierclientimage = (event) =>{
+        event.preventDefault()
+        this.props.history.push("/Modifierclientimage")
+    }
     render() {
     
         const {
@@ -142,6 +148,9 @@ class Profileclient extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
+            {localStorage.getItem('isclient') != 'true' &&
+             this.props.history.push("/Loginclient")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -156,7 +165,13 @@ class Profileclient extends Component {
                 <Row>
                 <Col xs={6} > 
                 <Card border="primary" style={{ width: '30rem' }}>
-                    <Card.Header><Image src={this.state.photo} fluid roundedCircle /></Card.Header>
+                    <Card.Header>
+                        <Image src={`https://ipfs.infura.io/ipfs/${this.state.photo}`} fluid roundedCircle />
+                       <center>
+                       <Image onClick={this.modifierclientimage} src={imagemodifier} roundedCircle />
+                       Modifier votre image de profile 
+                       </center>
+                    </Card.Header>
                     <Card.Body>
                       <Card.Title><center><h5><b>Informations Personnelle</b></h5></center></Card.Title>
                       <Card.Text>
@@ -181,7 +196,7 @@ class Profileclient extends Component {
                     </Card.Body>
                   </Card>
                   <br />
-                  <Button variant="dark">Modifier Mes Informations</Button>
+                  <Button variant="dark" onClick = {this.modifierclientinfos} >Modifier Mes Informations</Button>
                   </Col>
                 </Row>
             </Container>

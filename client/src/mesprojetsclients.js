@@ -46,26 +46,31 @@ class mesprojetsclients extends Component {
             accounts,
             chainid
         }, await this.loadInitialContracts)
-        const clients = await this.loadContract("dev", "EngagementClient")
-        var nb =  await clients.methods.getlisteclientengage().call()
+
+        // nb client engage
+        const engagementclients = await this.loadContract("dev", "EngagementClient")
+        var nb =  await engagementclients.methods.getlisteclientengage().call()
         this.setState({nbclientengage:nb})
 
+        // nb client inscris
         const client = await this.loadContract("dev", "Client")
-        var nb =  await client.methods.listeclient().call()
+        var nbc =  await client.methods.listeclient().call()
         this.setState({nbclient:nb})
         var ci = ""
-        for (var i=0; i < nb; i++) {
+        // trouver le cin du client actuel
+        for (var i=0; i < nbc; i++) {
           const wallet = await client.methods.getwalletAddress(i).call()
           if(accounts[0] == wallet){
             ci = await client.methods.getcin(i).call()
           }
         }
+        console.log(ci)
         for (var i=0; i < nb; i++) {
-            const cin = await clients.methods.getcin(i).call()
+            const cin = await engagementclients.methods.getcin(i).call()
             if(cin == ci)
             {
-                const ref = await clients.methods.getreferenceclient(i).call() 
-                const type = await clients.methods.gettypecontract(i).call()            
+                const ref = await engagementclients.methods.getreferenceclient(i).call() 
+                const type = await engagementclients.methods.gettypecontract(i).call()            
                 const list =[{
                     cinclient : cin,
                     reference: ref, 
@@ -144,7 +149,9 @@ class mesprojetsclients extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+          {localStorage.getItem('isclient') != 'true' &&
+             this.props.history.push("/Loginclient")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -156,7 +163,7 @@ class mesprojetsclients extends Component {
             <br/>
            
             <Table responsive >
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                     <th>Votre CIN</th>
                     <th>Reference projet</th>

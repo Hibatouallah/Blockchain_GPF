@@ -129,7 +129,9 @@ class Listewishlist extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+           {localStorage.getItem('ispromoteur') != 'true' &&
+             this.props.history.push("/Loginpromoteur")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to

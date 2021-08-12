@@ -1,7 +1,7 @@
 
 import Routes from "./Routes";
 import { Link, withRouter } from "react-router-dom";
-
+import {Image} from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
@@ -20,7 +20,8 @@ import React, { Component, Fragment} from "react";
 import {getWeb3} from "./getWeb3"
 import {getEthereum} from "./getEthereum"
 import { combineReducers } from 'redux';
-
+import map from "./artifacts/deployments/map.json"
+import notification from './img/notification.png'
 import { MDBCol, MDBContainer, MDBRow, MDBFooter } from "mdbreact";
 class App extends Component {
     
@@ -29,8 +30,10 @@ class App extends Component {
         isAuthenticating: true,
         web3: null,
         accounts: null,
+        fonds : null,
         chainid: null,
-        nouser : true
+        nouser : true,
+        nbnotificationfonds : 0
     };
     userHasAuthenticated = authenticated => {
         this.setState({ isAuthenticated: true });
@@ -41,7 +44,30 @@ class App extends Component {
       alert('vous avez déconnecté ');
       this.props.history.push("/");
     }
-      
+    loadContract = async (chain, contractName) => {
+      // Load a deployed contract instance into a web3 contract object
+      const {web3} = this.state
+
+      // Get the address of the most recent deployment from the deployment map
+      let address
+      try {
+          address = map[chain][contractName][0]
+      } catch (e) {
+          console.log(`Couldn't find any deployed contract "${contractName}" on the chain "${chain}".`)
+          return undefined
+      }
+
+      // Load the artifact with the specified address
+      let contractArtifact
+      try {
+          contractArtifact = await import(`./artifacts/deployments/${chain}/${address}.json`)
+      } catch (e) {
+          console.log(`Failed to load contract artifact "./artifacts/deployments/${chain}/${address}.json"`)
+          return undefined
+      }
+
+      return new web3.eth.Contract(contractArtifact.abi, address)
+  } 
     componentDidMount = async () => {
 
         // Get network provider and web3 instance.
@@ -62,13 +88,15 @@ class App extends Component {
 
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
-
+     
         this.setState({
             web3,
             accounts,
             chainid
         }, await this.loadInitialContracts)
-      
+        const fonds = await this.loadContract("dev","Fonds")
+        const promoteur = await this.loadContract("dev","Promoteur")
+        const client = await this.loadContract("dev","Client")
         localStorage.setItem('nouser',this.state.nouser);
    
         if(localStorage.getItem('userpromo') === 'true' || localStorage.getItem('userfonds') === 'true'){
@@ -76,9 +104,21 @@ class App extends Component {
           localStorage.setItem('nouser',this.state.nouser);
         } 
         this.setState({ isAuthenticating: false });
-        
-        console.log(typeof(this.state.accounts[0]))
-
+        // FONDS
+        var nbfonds =  await fonds.methods.getnbnotification().call()
+        this.setState({nbnotificationfonds:nbfonds})
+        localStorage.setItem('nbnotificationfonds',this.state.nbnotificationfonds)
+        // PROMOTEUR
+        var nbpromo =  await promoteur.methods.getnbnotification().call()
+        this.setState({nbnotificationpromoteur:nbpromo})
+        localStorage.setItem('nbnotificationpromoteur',this.state.nbnotificationpromoteur)
+        // CLIENT
+        var nbclient =  await client.methods.getnbnotification().call()
+        console.log(nbclient)
+        this.setState({nbnotificationclient:nbclient})
+        localStorage.setItem('nbnotificationclient',this.state.nbnotificationclient)
+        console.log(this.state.nbnotificationclient)
+     
     }
 
     render() {
@@ -106,7 +146,7 @@ class App extends Component {
                 </NavLink>
                 }
                 {localStorage.getItem('ispromoteur') === 'true' &&
-                <NavLink to="/ListeCandidature" activeStyle>
+                <NavLink to="/promoteurcandidature" activeStyle>
                     Mes Candidatures
                 </NavLink>
                  }
@@ -120,7 +160,13 @@ class App extends Component {
                     Mes projets
                 </NavLink>
                 }
-               
+                {localStorage.getItem('ispromoteur') === 'true' &&
+                <NavLink to="/notificationPromoteur" activeStyle>
+                    <Image   onClick={this.handlefonds} src={notification} roundedCircle />
+                    <button className="badge">{localStorage.getItem('nbnotificationpromoteur')}</button>
+                      
+                </NavLink>
+                }
                 {localStorage.getItem('isclient') === 'true' &&
                 <NavLink to='/Profileclient' activeStyle>
                     Profile
@@ -136,14 +182,40 @@ class App extends Component {
                     Mes projets
                 </NavLink>
                 }
+                {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to="/notificationClient" activeStyle>
+                  
+                    <Image  onClick={this.handlefonds} src={notification} roundedCircle />
+                      <button className="badge">{localStorage.getItem('nbnotificationclient')}</button>
+                      
+                </NavLink>
+                }
                  {localStorage.getItem('isfonds') === 'true' &&
                 <NavLink to="/listeprojets" activeStyle>
-                    Mes projets
+                    Les projets
                 </NavLink>
                 }
                 {localStorage.getItem('isfonds') === 'true' &&
                 <NavLink to="/listecontrats" activeStyle>
-                     Mes Contrats
+                     Les Contrats
+                </NavLink>
+                }
+                  {localStorage.getItem('isfonds') === 'true' &&
+                <NavLink to="/listepromoteurs" activeStyle>
+                     Les promoteurs
+                </NavLink>
+                }
+                  {localStorage.getItem('isfonds') === 'true' &&
+                <NavLink to="/listeclients" activeStyle>
+                     Les clients
+                </NavLink>
+                }
+                  {localStorage.getItem('isfonds') === 'true' &&
+                <NavLink to="/notificationFonds" activeStyle>
+                  
+                    <Image  onClick={this.handlefonds} src={notification} roundedCircle />
+                      <button className="badge">{localStorage.getItem('nbnotificationfonds')}</button>
+                      
                 </NavLink>
                 }
                 <NavLink onClick={this.handleLogout} activeStyle>

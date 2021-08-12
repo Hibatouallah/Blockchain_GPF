@@ -48,18 +48,28 @@ class Listewishlistclient extends Component {
         var nb =  await clients.methods.listewishlist().call()
         console.log(nb)
         this.setState({nbwishlist:nb})
-
+        
         for (var i=0; i < nb; i++) {
-            const ref = await clients.methods.getreferencewishlist(i).call()
-            console.log(ref)
-            const dateaj = await clients.methods.getdateajout(i).call()            
-            const list =[{
-                reference: ref, 
-                dateajout: dateaj
-            }]
-            this.setState({
-                wishlist:[...this.state.wishlist,list] 
-            })
+        
+           const wallet = await clients.methods.getwalletAddresswishlist(i).call()
+           console.log(wallet)
+           if(accounts[0] == wallet){
+            const statuss = await clients.methods.getstatus(i).call()
+            if(statuss == 'disponible'){
+                const ref = await clients.methods.getreferencewishlist(i).call()
+                console.log(ref)
+                const dateaj = await clients.methods.getdateajout(i).call()            
+                const list =[{
+                    reference: ref, 
+                    dateajout: dateaj,
+                    status : statuss,
+                    wal : wallet
+                }]
+                this.setState({
+                    wishlist:[...this.state.wishlist,list] 
+                })
+            }
+           }
         }
         console.log(this.state.wishlist)
     }
@@ -108,6 +118,48 @@ class Listewishlistclient extends Component {
         localStorage.setItem('refprojet',ref);
         this.props.history.push("/Confirmerclient");
       }
+    handlesupp = async(ref) =>{
+        // Get network provider and web3 instance.
+        const web3 = await getWeb3()
+
+        // Try and enable accounts (connect metamask)
+        try {
+            const ethereum = await getEthereum()
+            ethereum.enable()
+        } catch (e) {
+            console.log(`Could not enable accounts. Interaction with contracts not available.
+            Use a modern browser with a Web3 plugin to fix this issue.`)
+            console.log(e)
+        }
+
+        // Use web3 to get the user's accounts
+        const accounts = await web3.eth.getAccounts()
+
+        // Get the current chain id
+        const chainid = parseInt(await web3.eth.getChainId())
+     
+        this.setState({
+            web3,
+            accounts,
+            chainid
+        }, await this.loadInitialContracts)
+        const clients = await this.loadContract("dev", "Client")
+        var nb =  await clients.methods.listewishlist().call()
+        console.log(nb)
+        this.setState({nbwishlist:nb})
+        
+        for (var i=0; i < nb; i++) {
+           const wallet = await clients.methods.getwalletAddresswishlist(i).call()
+           if(accounts[0] == wallet){
+            var reference = await clients.methods.getreferencewishlist(i).call()
+            if(reference == ref){
+                var result = await clients.methods.modifierwishlist(i).send({from: accounts[0]})
+                this.props.history.push("/Listewishlistclient");
+            }
+           }
+        }
+
+    }
     render() {
     
         const {
@@ -129,7 +181,9 @@ class Listewishlistclient extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-          
+          {localStorage.getItem('isclient') != 'true' &&
+             this.props.history.push("/Loginclient")
+            }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -146,6 +200,8 @@ class Listewishlistclient extends Component {
                     <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
                     <th>reference du projet</th>
                     <th>date d'ajout</th>
+                    <th>Status</th>
+                    <th>wallet</th>
                     <th>Confirmation</th>
 
                     </tr>
@@ -154,9 +210,11 @@ class Listewishlistclient extends Component {
              
                 {this.state.wishlist.map((list) =>
                     <tr>
-                            <td><center><Image onClick={this.handlepomoteur} src={deleteicon} roundedCircle/></center></td>
+                            <td><center><Image onClick={() => this.handlesupp(list[0].reference)} src={deleteicon} roundedCircle/></center></td>
                             <td>{list[0].reference}</td>
                             <td>{list[0].dateajout}</td>
+                            <td>{list[0].status}</td>
+                            <td>{list[0].wal}</td>
                             <td><Button variant="dark" onClick={() => this.handleChange(list[0].reference)}> Confirmer </Button></td>
                             
                     </tr>

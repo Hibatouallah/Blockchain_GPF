@@ -38,8 +38,6 @@ class ajoutercontratmorabaha extends Component {
   
     validateForm() {
         return (
-          
-          this.state.referenceprojet.length > 0 &&
           !isNaN(parseInt(this.state.estimationpenalite))&&
           this.state.coutderevien.length > 0 &&
           this.state.marge.length > 0 &&
@@ -127,10 +125,10 @@ class ajoutercontratmorabaha extends Component {
     }
 
     ajoutercontrat = async (e) => {
-        const {accounts,engagementClient,duree_contrat,montant_Mensuelle,montant_trimestriel,montant_semestriel,montant_annuel,assurancetakaful,montant_caution_provisoire,referenceprojet,estimationpenalite,coutderevien,marge,prixvente,duree_ammortissement,delai_execution} = this.state
+        const {accounts,engagementClient,duree_contrat,montant_Mensuelle,montant_trimestriel,montant_semestriel,montant_annuel,assurancetakaful,montant_caution_provisoire,estimationpenalite,coutderevien,marge,prixvente,duree_ammortissement,delai_execution} = this.state
         e.preventDefault()
      
-        var _referenceprojet = referenceprojet
+        var _referenceprojet = localStorage.getItem('reference')
         var _estimationpenalite= estimationpenalite
         var _coutderevien = coutderevien
         var _marge = marge
@@ -146,7 +144,7 @@ class ajoutercontratmorabaha extends Component {
         var _montant_annuel = montant_annuel
         
           var result = await engagementClient.methods.ajoutercontrat_morabaha_fonds(_referenceprojet,_estimationpenalite,_coutderevien,_marge,_prixvente,_duree_ammortissement,_montant_Mensuelle,_montant_trimestriel,_montant_semestriel,_montant_annuel,_assurancetakaful,_duree_contrat).send({from: accounts[0]})
-          alert("contrat ajouté ajouté")
+          alert("contrat Mourabaha ajouté")
           this.props.history.push("/ListeContratsmorabaha");
    
           
@@ -173,7 +171,9 @@ class ajoutercontratmorabaha extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
       return (
         <div className="container">
-          
+           {localStorage.getItem('isfonds') != 'true' &&
+             this.props.history.push("/Loginfonds")
+             }
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -194,7 +194,9 @@ class ajoutercontratmorabaha extends Component {
                 autoFocus
                 type="text"
                 name="referenceprojet"
+                value={localStorage.getItem('reference')}
                 onChange={(e) => this.setState({referenceprojet: e.target.value})}
+                readOnly
               />
             </FormGroup>
             <FormGroup as={Col} controlId="estimationpenalite" bsSize="large" readOnly>
