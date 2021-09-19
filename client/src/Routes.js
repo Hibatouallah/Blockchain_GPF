@@ -56,6 +56,15 @@ import listepromoteurengageme from "./listepromoteurengageme"
 import promoteurcandidature from "./promoteurcandidature"
 import listeprojetsencours from "./listeprojetsencours"
 import listetotalprojets from "./listetotalprojets"
+import listepromoteurtotal from "./listepromoteurtotal"
+import listeclientstotal from "./listeclientstotal"
+import listeclientsengage from "./listeclientsengage"
+import Payementclient from "./Payementclient"
+import listepayementclient from "./listepayementclient"
+import Listeclient_projet from "./Listeclient_projet"
+import historiquepayementclient from "./historiquepayementclient"
+import PagePayementclient_Morabaha from "./PagePayementclient_Morabaha"
+import PagePayementclient_ijara from "./PagePayementclient_ijara"
 export default ({ childProps }) =>
   <Switch>
     { /* routes */ }
@@ -106,7 +115,9 @@ export default ({ childProps }) =>
     <AppliedRoute path="/ListeCandidature" exact component={ListeCandidature} props={childProps} />
     <AppliedRoute path="/listeprojetsencours" exact component={listeprojetsencours} props={childProps} />
     <AppliedRoute path="/listetotalprojets" exact component={listetotalprojets} props={childProps} />
-    
+    <AppliedRoute path="/listepromoteurtotal" exact component={listepromoteurtotal} props={childProps} />
+    <AppliedRoute path="/listeclientstotal" exact component={listeclientstotal} props={childProps} />
+    <AppliedRoute path="/listeclientsengage" exact component={listeclientsengage} props={childProps} />
     { /* routes client*/ }
     <AppliedRoute path="/Loginclient" exact component={Loginclient} props={childProps} />
     <AppliedRoute path="/Inscriptionclient" exact component={Inscriptionclient} props={childProps} />
@@ -120,6 +131,14 @@ export default ({ childProps }) =>
     <AppliedRoute path="/Modifierclientinfos" exact component={Modifierclientinfos} props={childProps} />
     <AppliedRoute path="/Modifierclientimage" exact component={Modifierclientimage} props={childProps} />
     <AppliedRoute path="/notificationClient" exact component={notificationClient} props={childProps} />
+    <AppliedRoute path="/Payementclient" exact component={Payementclient} props={childProps} />
+    <AppliedRoute path="/listepayementclient" exact component={listepayementclient} props={childProps} />
+    <AppliedRoute path="/Listeclient_projet" exact component={Listeclient_projet} props={childProps} />
+    <AppliedRoute path="/historiquepayementclient" exact component={historiquepayementclient} props={childProps} />
+    <AppliedRoute path="/PagePayementclient_Morabaha" exact component={PagePayementclient_Morabaha} props={childProps} />
+    <AppliedRoute path="/PagePayementclient_ijara" exact component={PagePayementclient_ijara} props={childProps} />
+
+    
     { /* Finally, catch all unmatched routes */ }
     <Route component={NotFound} />
   </Switch>

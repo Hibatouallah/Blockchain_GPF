@@ -6,6 +6,9 @@ import {Card,Image} from "react-bootstrap"
 
 import OK from './img/ok.png'
 
+const ipfsClient = require('ipfs-api')
+// connect to ipfs daemon API server
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 class listeprojetspromoteurs extends Component {
 
     state = {
@@ -44,7 +47,7 @@ class listeprojetspromoteurs extends Component {
         }, await this.loadInitialContracts)
         const engagamentpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
         var nb =  await engagamentpromoteur.methods.getlisteprojetpromoteur().call()
-       
+        var nbl =  await engagamentpromoteur.methods.getlisteprojetpromoteur().call()
         for (var i=0; i < nb; i++) {
             const account = await engagamentpromoteur.methods.getaccountpromoteurprojet(i).call()
             if(account == accounts[0]){
@@ -54,18 +57,33 @@ class listeprojetspromoteurs extends Component {
                 var grand = await engagamentpromoteur.methods.getgrands_travaux(i).call()
                 var fini = await engagamentpromoteur.methods.getfinition(i).call()
                 var livr = await engagamentpromoteur.methods.getlivraison(i).call()
-                const list =[{
-                    accountpromoteur: account,
-                    referencepromoteur : ref,
-                    debutdestravaux : debut,
-                    construction_rez_de_chaussee : construction,
-                    grands_travaux : grand ,
-                    finition : fini,
-                    livraison : livr
-                }]
-                this.setState({
-                    listeprojetpromoteur:[...this.state.listeprojetpromoteur,list] 
-                })
+                for(var k = 0;k<nbl;k++){
+                    var acc =  await engagamentpromoteur.methods.getaccountpromoteurprojet(k).call()
+                    console.log(acc)
+                    if(acc == accounts[0]){
+                        var reference = await engagamentpromoteur.methods.getreferencepromoteurprojet(k).call()
+                        console.log(reference)
+                        if(reference == ref){
+                            console.log(reference)
+                            var contrat = await engagamentpromoteur.methods.getcontrat(k).call()
+                            console.log(contrat)
+                            const list =[{
+                                accountpromoteur: account,
+                                referencepromoteur : ref,
+                                debutdestravaux : debut,
+                                construction_rez_de_chaussee : construction,
+                                grands_travaux : grand ,
+                                finition : fini,
+                                livraison : livr,
+                                contrat : contrat
+                            }]
+                            this.setState({
+                                listeprojetpromoteur:[...this.state.listeprojetpromoteur,list] 
+                            })
+                        }
+                    }
+                }
+               
             }
         }
     }
@@ -372,6 +390,9 @@ class listeprojetspromoteurs extends Component {
                       {list[0].livraison === 'non' &&
                         <Image onClick={() => this.handlelivraison(list[0].referencepromoteur)} src={OK} roundedCircle />
                       } <b className="red">si vous avez terminer cette tache</b>
+                      </p>
+                      <p><b>Contrat Istisnaa: </b>&nbsp; <b className="red"><a href={`https://ipfs.infura.io/ipfs/${list[0].contrat}`}>contrat.pdf</a>&nbsp; </b>
+                  
                       </p>
                    
                       </Card.Text>

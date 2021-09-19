@@ -120,18 +120,22 @@ class Loginpromoteur extends Component {
      
         this.setState({nbpromoteur:nb})
         for (var i=0; i < nb; i++) {
+            console.log("hi")
           const wallet = await promoteur.methods.getwalletAddress(i).call()
+          console.log(wallet)
+          console.log(accounts[0])
           if(wallet == accounts[0])
           {
                 var result = await promoteur.methods.authentification(i,_email,_password).call()
+                console.log(result)
                 if(result == "welcome"){
-                  
+                    alert(result)
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('ispromoteur', 'true');
                     this.props.history.push("/");
                 }
                 else {
-                  
+                    alert(result)
                     this.setState({ isLoading: false });
                 }
           }else{

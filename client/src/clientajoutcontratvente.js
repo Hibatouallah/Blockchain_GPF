@@ -14,7 +14,6 @@ import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import axios from 'axios';
-import vente from './img/vente.pdf';
 
 class clientajoutcontratvente extends Component {
     state = {
@@ -182,6 +181,12 @@ class clientajoutcontratvente extends Component {
                   var _message = "le percentage des clients engagés est 50% du projet avec la reference "+reference+"vous pouvez déclencher la procédure des travaux"
                   var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
                 }
+                if(percentage == 100)
+                {
+                  var _message = "le percentage des clients engagés est 100% du projet avec la reference "+reference
+                  var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                  var result = fonds.methods.modifierstatus(k).send({from: accounts[0]})
+                }
                 this.props.history.push("/mesprojetsclients");
             }
            }
@@ -263,16 +268,7 @@ class clientajoutcontratvente extends Component {
             <Form.Row>
             <Form.Group >
             </Form.Group>
-            <Form.Group  as={Col} >
-            <Form.Label>Télécharger votre contrat: </Form.Label>
-            <br/>
-                <Button
-                href={vente}
-                variant="danger"
-                target="_blank"
-                download>Cliquez ici
-                </Button>
-            </Form.Group>
+            
             </Form.Row>
           
               <Button

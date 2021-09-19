@@ -215,15 +215,7 @@ class notificationPromoteur extends Component {
                     </p>
                     : null
             }
-            <Container>
-            <Row>
-                <Col xs={12} md={8}>
-                </Col>
-                <Col xs={6} md={4}>
-                    <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Button onClick={this.ajouter} variant="outline-primary">Ajouter</Button></center>
-                </Col>
-            </Row>
-            </Container>
+           
             <br/>
            <h3 class ='h3style'>Mes notifications </h3>
             <Table responsive >

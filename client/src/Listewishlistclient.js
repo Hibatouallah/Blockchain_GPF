@@ -198,8 +198,8 @@ class Listewishlistclient extends Component {
                 <thead>
                     <tr>
                     <th >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
-                    <th>reference du projet</th>
-                    <th>date d'ajout</th>
+                    <th>reference_projet</th>
+                    <th>date_ajout</th>
                     <th>Status</th>
                     <th>wallet</th>
                     <th>Confirmation</th>

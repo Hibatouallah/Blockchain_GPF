@@ -14,7 +14,6 @@ import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import axios from 'axios';
-import mourabaha from './img/mourabaha.pdf';
 
 class clientajoutcontratsmorabaha extends Component {
     state = {
@@ -31,32 +30,18 @@ class clientajoutcontratsmorabaha extends Component {
         delai_execution :"",
         assurancetakaful :"",
         duree_contrat :"",
-        montant_Mensuelle :"",
-        montant_trimestriel :"",
-        montant_semestriel :"",
-        montant_annuel :"",
+        duree_payement : "",
+        type_payement : "",
         nbcontrat:0,
         nbclient : 0,
-        numcontrat :0
+        numcontrat :0,
+        contrat : ""
     }
   
     validateForm() {
         return (
-          
-          this.state.referenceprojet.length > 0 &&
-          !isNaN(parseInt(this.state.estimationpenalite))&&
-          this.state.coutderevien.length > 0 &&
-          this.state.marge.length > 0 &&
-          this.state.prixvente != " " &&
-          this.state.duree_ammortissement != " " &&
-          this.state.delai_execution != " " &&
-          this.state.montant_caution_provisoire != " " &&
-          this.state.assurancetakaful!= " "  &&
-          this.state.duree_contrat != " " &&
-          this.state.montant_Mensuelle.length > 0 &&
-          this.state.montant_trimestriel.length > 0 &&
-          this.state.montant_semestriel != " " &&
-          this.state.montant_annuel != " " 
+          this.state.duree_payement.length > 0 &&
+          this.state.type_payement.length > 0 
         );
       }
    
@@ -87,7 +72,7 @@ this.setState({
     chainid
 }, await this.loadInitialContracts)
 const EngagementClient = await this.loadContract("dev", "EngagementClient")
-var nb =  await EngagementClient.methods.getListecontratmorabah().call()
+var nb =  await EngagementClient.methods.getListecontratmorabaha().call()
 this.setState({nbcontrat:nb})
 console.log(nb)
 for (var i=0; i < nb; i++) {
@@ -101,11 +86,6 @@ for (var i=0; i < nb; i++) {
         const marg = await EngagementClient.methods.getmarge(i).call()
         const prix = await EngagementClient.methods.getprixvente(i).call()
         const duree_ammort = await EngagementClient.methods.getduree_ammortissement(i).call()
-        const montantchois = await EngagementClient.methods.getmontantchoisi(i).call()
-        const montant_Mensuel = await EngagementClient.methods.getmontant_Mensuelle(i).call()
-        const montant_trimestrie = await EngagementClient.methods.getmontant_trimestriel(i).call()
-        const montant_semestri = await EngagementClient.methods.getmontant_semestriel(i).call()
-        const montant_annue = await EngagementClient.methods.getmontant_annuel(i).call()
         const assurancetakafu = await EngagementClient.methods.getassurancetakaful(i).call()
         const duree_contra = await EngagementClient.methods.getduree_contrat(i).call()
 
@@ -116,11 +96,6 @@ for (var i=0; i < nb; i++) {
             marge : marg,
             prixvente: prix, 
             duree_ammortissement: duree_ammort,
-            montantchoisi :montantchois,
-            montant_Mensuelle : montant_Mensuel,
-            montant_trimestriel: montant_trimestrie,
-            montant_semestriel: montant_semestri,
-            montant_annuel: montant_annue,
             assurancetakaful: assurancetakafu,
             duree_contrat: duree_contra ,
             numcontrat : i
@@ -171,7 +146,7 @@ for (var i=0; i < nb; i++) {
     }
 
     modifiercontrat = async (e) => {
-        const {accounts,montantchoisi,engagementClient,referenceprojet} = this.state
+        const {accounts,montantchoisi,engagementClient,referenceprojet,prixvente,duree_payement,type_payement} = this.state
         e.preventDefault()
         const client = await this.loadContract("dev", "Client")
         const fonds = await this.loadContract("dev", "Fonds")
@@ -185,9 +160,25 @@ for (var i=0; i < nb; i++) {
           }
         }
         var _referenceprojet = referenceprojet
-        var _montantchoisi = montantchoisi
-       
-          var result = await engagementClient.methods.modifiercontrat_morabaha_client(this.state.numcontrat,_montantchoisi,ci,_referenceprojet).send({from: accounts[0]})
+        // Calcul du montant
+        var _montantchoisi  = 0
+        if(type_payement == "Annuellement"){
+           _montantchoisi = parseFloat(prixvente/duree_payement)
+        }
+        if(type_payement == "Trimestriellement"){
+          _montantchoisi = parseFloat((prixvente/duree_payement)/3)
+        }
+        if(type_payement == "Semestriellement"){
+          _montantchoisi = parseFloat((prixvente/duree_payement)/2)
+        }
+        if(type_payement == "Mensuellement"){
+         _montantchoisi = parseFloat((prixvente/duree_payement)/12)
+        }
+        console.log(_montantchoisi)
+        var montant = (_montantchoisi.toFixed(2)).toString();
+        
+        console.log(montant)
+         var result = await engagementClient.methods.modifiercontrat_morabaha_client(type_payement,duree_payement,montant,this.state.numcontrat,ci,_referenceprojet).send({from: accounts[0]})
           var nb =  await client.methods.listewishlist().call()
           console.log(nb)
           this.setState({nbwishlist:nb})
@@ -225,6 +216,12 @@ for (var i=0; i < nb; i++) {
                   {
                     var _message = "le percentage des clients engagés est 50% du projet avec la reference "+reference+"vous pouvez déclencher la procédure des travaux"
                     var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                  }
+                  if(percentage == 100)
+                  {
+                    var _message = "le percentage des clients engagés est 100% du projet avec la reference "+reference
+                    var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                    var result = fonds.methods.modifierstatus(k).send({from: accounts[0]})
                   }
                   this.props.history.push("/mesprojetsclients");
               }
@@ -355,28 +352,43 @@ for (var i=0; i < nb; i++) {
               />
             </FormGroup>
             </Form.Row>
-         
-            <Form.Row>
-            <Form.Group   as={Col} controlId="exampleForm.SelectCustom" size="lg" custom>
-                    <Form.Label>Montant par tranche : </Form.Label>
-                    <Form.Control onChange={(e) => this.setState({montantchoisi: e.target.value})} as="select" custom>
-                    <option>Annuel:{this.state.montant_annuel}</option>
-                    <option>Semestriel:{this.state.montant_semestriel}</option>
-                    <option>Trimestriel:{this.state.montant_trimestriel}</option>
-                    <option>Mensuel:{this.state.montant_Mensuelle} </option>
+          <Form.Row>
+            <Form.Group  as={Col} controlId="exampleForm.SelectCustom" size="lg" custom>
+                  <Form.Label>Duree de payement : </Form.Label>
+                    <Form.Control onChange={(e) => this.setState({duree_payement: e.target.value})} as="select" custom>
+                    <option> 5 </option>
+                    <option> 6 </option>
+                    <option> 7 </option>
+                    <option> 8 </option>
+                    <option> 9 </option>
+                    <option> 10 </option>
+                    <option> 11 </option>
+                    <option> 12 </option>
+                    <option> 13 </option>
+                    <option> 14 </option>
+                    <option> 15 </option>
+                    <option> 16 </option>
+                    <option> 17 </option>
+                    <option> 18 </option>
+                    <option> 19 </option>
+                    <option> 20 </option>
+                    <option> 21 </option>
+                    <option> 22 </option>
+                    <option> 23 </option>
+                    <option> 24 </option>
+                    <option> 25 </option>
                     </Form.Control>
             </Form.Group>
-            <Form.Group  as={Col} >
-            <Form.Label>Télécharger votre contrat: </Form.Label>
-            <br/>
-                <Button
-                href={mourabaha}
-                variant="danger"
-                target="_blank"
-                download>Cliquez ici
-                </Button>
+            <Form.Group  as={Col} controlId="exampleForm.SelectCustom" size="lg" custom>
+                  <Form.Label> Type de Payement  : </Form.Label>
+                    <Form.Control onChange={(e) => this.setState({type_payement: e.target.value})} as="select" custom>
+                    <option> Annuellement </option>
+                    <option>  Semestriellement </option>
+                    <option>  Trimestriellement  </option>
+                    <option> Mensuellement  </option>
+                    </Form.Control>
             </Form.Group>
-            </Form.Row>
+          </Form.Row>
           
               <Button
               block

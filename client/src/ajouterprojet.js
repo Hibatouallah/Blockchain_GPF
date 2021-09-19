@@ -519,7 +519,6 @@ class ajouterprojet extends Component {
             <FormGroup as={Col} controlId="mesures_securites_hygiene" bsSize="large">
               <FormLabel>Mesures des securites d'hygiene</FormLabel>
               <FormControl
-                
                 onChange={this.onChangeHandlermesures_securites_hygiene}
                 type="file"
               />

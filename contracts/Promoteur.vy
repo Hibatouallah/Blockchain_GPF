@@ -27,8 +27,6 @@ struct Promoteur_info:
     password: String[100]
     status: String[10]
     walletAddress: address
-    createdAt: String[20]
-    updatedAt: String[20]
     Penalits_retard: String[20]
    
 
@@ -117,7 +115,7 @@ def confirmercandidature(_nb:uint256):
     self.mescandidatures[_nb].confirmation = 'oui'
 @external
 def inscription(_photo: String[200],_nom_prenom : String[100],_activite : String[200],_identifiant_commun_entreprise : uint256,_identifiant_fiscal :uint256,_numero_rc:uint256,_adresse : String[1000],_email:String[100], _password:String[100], _walletAddress:address):
-
+ 
     self.promoteurs[self.nextpromoteurindex] = Promoteur_info({
         photo: _photo,
         nom_prenom :_nom_prenom,
@@ -128,12 +126,11 @@ def inscription(_photo: String[200],_nom_prenom : String[100],_activite : String
         adresse : _adresse,
         email: _email,
         password : _password,
-        status: 'Actif',
+        status: 'Desactiver',
         walletAddress : _walletAddress ,
-        createdAt : "0",
-        updatedAt : "0",
         Penalits_retard: ""})
     self.nextpromoteurindex = self.nextpromoteurindex +1
+    
 
 @external
 def modifierinfo(_nb:uint256,_nom_prenom : String[100],_activite : String[200],_identifiant_commun_entreprise : uint256,_identifiant_fiscal :uint256,_numero_rc:uint256,_adresse : String[1000],_email:String[100], _walletAddress:address):
@@ -150,15 +147,23 @@ def modifierinfo(_nb:uint256,_nom_prenom : String[100],_activite : String[200],_
 @external
 def authentification(_nb:uint256,_email:String[100], _password:String[100]) -> String[100]:
     res:String[100] = "r"
-    if self.promoteurs[_nb].email == _email:
-        if self.promoteurs[_nb].password == _password:
-            res = "welcome"
+    if self.promoteurs[_nb].status == "Activer":
+        if self.promoteurs[_nb].email == _email:
+            if self.promoteurs[_nb].password == _password:
+                res = "welcome"
+            else:
+                res = "invalide password"
         else:
-            res = "invalide password"
-    else:
-        res = "invalide email"
+            res = "invalide email"
+    else : 
+        res = "Le compte n'est pas encore confirmer , veuillez attendre au max 24h"
     return res
-
+@external
+def Activerpromoteur(nb:uint256):
+    self.promoteurs[nb].status = "Activer"
+@external
+def Desactiverpromoteur(nb:uint256):
+    self.promoteurs[nb].status = "Desactiver"
 
 @external
 def listewishlist() -> uint256 :
@@ -191,14 +196,6 @@ def getphoto(nb:uint256)->String[200]:
 @external
 def getPenalits_retard(nb:uint256)->String[20]:
     return self.promoteurs[nb].Penalits_retard
-
-@external
-def getupdatedAt(nb:uint256)->String[20]:
-    return self.promoteurs[nb].updatedAt
-
-@external
-def getcreatedAt(nb:uint256)->String[20]:
-    return self.promoteurs[nb].createdAt
 
 @external
 def getwalletAddress(nb:uint256)->address:

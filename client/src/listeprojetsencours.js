@@ -160,8 +160,8 @@ handledebutdestravaux = async(ref) =>{
     // transformer le montant en dollar 1 MAD ---> 0,11 dollar
     var montantdollar = montant * 0.11
     // transformer le montant en ether 1 dollar --> 0,00031 ETHER
-    var montantether = parseInt(montantdollar * 0.00031)
-    
+    var montantether = (montantdollar * 0.00031).toString()
+    console.log(montantether)
     //envoi du montant 
     const engagementpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
     var nb = await engagementpromoteur.methods.getlisteprojetpromoteur().call()
@@ -169,7 +169,9 @@ handledebutdestravaux = async(ref) =>{
         var reference = await engagementpromoteur.methods.getreferencepromoteurprojet(i).call()
         if(reference == ref){
             const _account = await engagementpromoteur.methods.getaccountpromoteurprojet(i).call()
-            var result1 = await engagementpromoteur.methods.payer(_account,montantether).send({from: accounts[0]})
+           
+            web3.eth.sendTransaction({from:accounts[0] ,to:_account, value:web3.utils.toWei(montantether,'ether')});
+            
             var _message = " Remboursement de la somme associée à la 1 ère tranche qui est "+montantether+" en ether du projet avec la reference :"+ref+""
             var result2 = await engagementpromoteur.methods.modifierpayementdebutdestravaux(i).send({from: accounts[0]})
             var result = await promoteur.methods.ajouternotification(_message,_account).send({from: accounts[0]})
@@ -221,7 +223,7 @@ handleconstruction_rez_de_chaussee = async(ref) =>{
     // transformer le montant en dollar 1 MAD ---> 0,11 dollar
     var montantdollar = montant * 0.11
     // transformer le montant en ether 1 dollar --> 0,00031 ETHER
-    var montantether = montantdollar * 0.00031
+    var montantether = (montantdollar * 0.00031).toString()
     //envoi du montant 
     const engagementpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
     var nb = await engagementpromoteur.methods.getlisteprojetpromoteur().call()
@@ -229,7 +231,7 @@ handleconstruction_rez_de_chaussee = async(ref) =>{
         var reference = await engagementpromoteur.methods.getreferencepromoteurprojet(i).call()
         if(reference == ref){
             const _account = await engagementpromoteur.methods.getaccountpromoteurprojet(i).call()
-            var result1 = await engagementpromoteur.methods.payer(_account,montantether).send({from: accounts[0]})
+            web3.eth.sendTransaction({from:accounts[0] ,to:_account, value:web3.utils.toWei(montantether,'ether')});
             var _message = " Remboursement de la somme associée à la 2 ème tranche qui est "+montantether+" en ether du projet avec la reference :"+ref+""
             var result2 = await engagementpromoteur.methods.modifierpayementconstruction_rez_de_chaussee(i).send({from: accounts[0]})
             var result = await promoteur.methods.ajouternotification(_message,_account).send({from: accounts[0]})
@@ -281,7 +283,7 @@ handlegrands_travaux = async(ref) =>{
     // transformer le montant en dollar 1 MAD ---> 0,11 dollar
     var montantdollar = montant * 0.11
     // transformer le montant en ether 1 dollar --> 0,00031 ETHER
-    var montantether = montantdollar * 0.00031
+    var montantether = (montantdollar * 0.00031).toString()
     //envoi du montant 
     const engagementpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
     var nb = await engagementpromoteur.methods.getlisteprojetpromoteur().call()
@@ -289,7 +291,7 @@ handlegrands_travaux = async(ref) =>{
         var reference = await engagementpromoteur.methods.getreferencepromoteurprojet(i).call()
         if(reference == ref){
             const _account = await engagementpromoteur.methods.getaccountpromoteurprojet(i).call()
-            var result1 = await engagementpromoteur.methods.payer(_account,montantether).send({from: accounts[0]})
+            web3.eth.sendTransaction({from:accounts[0] ,to:_account, value:web3.utils.toWei(montantether,'ether')});
             var _message = " Remboursement de la somme associée à la 3 ème tranche qui est "+montantether+" en ether du projet avec la reference :"+ref+""
             var result2 = await engagementpromoteur.methods.modifierpayementgrands_travaux(i).send({from: accounts[0]})
             var result = await promoteur.methods.ajouternotification(_message,_account).send({from: accounts[0]})
@@ -341,7 +343,7 @@ handlefinition = async(ref) =>{
     // transformer le montant en dollar 1 MAD ---> 0,11 dollar
     var montantdollar = montant * 0.11
     // transformer le montant en ether 1 dollar --> 0,00031 ETHER
-    var montantether = montantdollar * 0.00031
+    var montantether = (montantdollar * 0.00031).toString()
     //envoi du montant 
     const engagementpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
     var nb = await engagementpromoteur.methods.getlisteprojetpromoteur().call()
@@ -349,7 +351,7 @@ handlefinition = async(ref) =>{
         var reference = await engagementpromoteur.methods.getreferencepromoteurprojet(i).call()
         if(reference == ref){
             const _account = await engagementpromoteur.methods.getaccountpromoteurprojet(i).call()
-            var result1 = await engagementpromoteur.methods.payer(_account,montantether).send({from: accounts[0]})
+            web3.eth.sendTransaction({from:accounts[0] ,to:_account, value:web3.utils.toWei(montantether,'ether')});
             var _message = " Remboursement de la somme associée à la 4 ème tranche qui est "+montantether+" en ether du projet avec la reference :"+ref+""
             var result2 = await engagementpromoteur.methods.modifierpayementfinition(i).send({from: accounts[0]})
             var result = await promoteur.methods.ajouternotification(_message,_account).send({from: accounts[0]})
@@ -401,7 +403,7 @@ handlelivraison = async(ref) =>{
     // transformer le montant en dollar 1 MAD ---> 0,11 dollar
     var montantdollar = montant * 0.11
     // transformer le montant en ether 1 dollar --> 0,00031 ETHER
-    var montantether = montantdollar * 0.00031
+    var montantether = (montantdollar * 0.00031).toString()
     //envoi du montant 
     const engagementpromoteur = await this.loadContract("dev", "EngagamentPromoteur")
     var nb = await engagementpromoteur.methods.getlisteprojetpromoteur().call()
@@ -409,7 +411,7 @@ handlelivraison = async(ref) =>{
         var reference = await engagementpromoteur.methods.getreferencepromoteurprojet(i).call()
         if(reference == ref){
             const _account = await engagementpromoteur.methods.getaccountpromoteurprojet(i).call()
-            var result1 = await engagementpromoteur.methods.payer(_account,montantether).send({from: accounts[0]})
+            web3.eth.sendTransaction({from:accounts[0] ,to:_account, value:web3.utils.toWei(montantether,'ether')});
             var _message = " Remboursement de la somme associée à la 5 ème tranche qui est "+montantether+" en ether du projet avec la reference :"+ref+""
             var result2 = await engagementpromoteur.methods.modifierpayementlivraison(i).send({from: accounts[0]})
             var result = await promoteur.methods.ajouternotification(_message,_account).send({from: accounts[0]})

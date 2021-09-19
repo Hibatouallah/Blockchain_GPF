@@ -14,7 +14,7 @@ import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import axios from 'axios';
-import ijara from './img/ijara.pdf';
+
 
 class clientajoutcontratijara extends Component {
     state = {
@@ -30,7 +30,9 @@ class clientajoutcontratijara extends Component {
         montantpartranche : "",
         nbcontrat:0,
         nbclient : 0,
-        numcontrat : 0
+        numcontrat : 0,
+        duree_payement : "",
+        type_payement : "",
     }
   
     validateForm() {
@@ -40,7 +42,9 @@ class clientajoutcontratijara extends Component {
           this.state.montant_loyer.length > 0 &&
           this.state.date_resuliation != " " &&
           this.state.cession_du_bien != " " &&
-          this.state.montantpartranche != " " 
+          this.state.montantpartranche != " " &&
+          this.state.duree_payement != "" &&
+          this.state.type_payement != ""
         );
       }
    
@@ -139,7 +143,7 @@ for (var i=0; i < nb; i++) {
     }
 
     modifiercontrat = async (e) => {
-        const {accounts,montantchoisi,engagementClient,referenceprojet} = this.state
+        const {accounts,montant_loyer,engagementClient,referenceprojet,duree_payement,type_payement} = this.state
         e.preventDefault()
         const client = await this.loadContract("dev", "Client")
         const fonds = await this.loadContract("dev", "Fonds")
@@ -154,7 +158,25 @@ for (var i=0; i < nb; i++) {
           }
         }
         var _referenceprojet = referenceprojet
-        var result = await engagementClient.methods.modifierijaramontahiyabitamlik_client(this.state.numcontrat,ci,_referenceprojet).send({from: accounts[0]})
+
+        // Calcul du montant
+        var _montantchoisi  = 0
+        if(type_payement == "Annuellement"){
+           _montantchoisi = parseFloat(montant_loyer/duree_payement)
+        }
+        if(type_payement == "Trimestriellement"){
+          _montantchoisi = parseFloat((montant_loyer/duree_payement)/3)
+        }
+        if(type_payement == "Semestriellement"){
+          _montantchoisi = parseFloat((montant_loyer/duree_payement)/2)
+        }
+        if(type_payement == "Mensuellement"){
+         _montantchoisi = parseFloat((montant_loyer/duree_payement)/12)
+        }
+        console.log(_montantchoisi)
+        var montant = (_montantchoisi.toFixed(2)).toString();
+        
+        var result = await engagementClient.methods.modifierijaramontahiyabitamlik_client(type_payement,duree_payement,montant,this.state.numcontrat,ci,_referenceprojet).send({from: accounts[0]})
         var nb =  await client.methods.listewishlist().call()
         console.log(nb)
         this.setState({nbwishlist:nb})
@@ -193,6 +215,12 @@ for (var i=0; i < nb; i++) {
                 {
                   var _message = "le percentage des clients engagés est 50% du projet avec la reference "+reference+"vous pouvez déclencher la procédure des travaux"
                   var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                }
+                if(percentage == 100)
+                {
+                  var _message = "le percentage des clients engagés est 100% du projet avec la reference "+reference
+                  var result = fonds.methods.ajouternotification(_message).send({from: accounts[0]})
+                  var result = fonds.methods.modifierstatus(k).send({from: accounts[0]})
                 }
                 this.props.history.push("/mesprojetsclients");
             }
@@ -303,19 +331,43 @@ for (var i=0; i < nb; i++) {
             </FormGroup>
             </Form.Row>
             <Form.Row>
-            <Form.Group >
+            <Form.Group  as={Col} controlId="exampleForm.SelectCustom" size="lg" custom>
+                  <Form.Label>Duree de payement : </Form.Label>
+                    <Form.Control onChange={(e) => this.setState({duree_payement: e.target.value})} as="select" custom>
+                    <option> 5 </option>
+                    <option> 6 </option>
+                    <option> 7 </option>
+                    <option> 8 </option>
+                    <option> 9 </option>
+                    <option> 10 </option>
+                    <option> 11 </option>
+                    <option> 12 </option>
+                    <option> 13 </option>
+                    <option> 14 </option>
+                    <option> 15 </option>
+                    <option> 16 </option>
+                    <option> 17 </option>
+                    <option> 18 </option>
+                    <option> 19 </option>
+                    <option> 20 </option>
+                    <option> 21 </option>
+                    <option> 22 </option>
+                    <option> 23 </option>
+                    <option> 24 </option>
+                    <option> 25 </option>
+                    </Form.Control>
             </Form.Group>
-            <Form.Group  as={Col} >
-            <Form.Label>Télécharger votre contrat: </Form.Label>
-            <br/>
-                <Button
-                href={ijara}
-                variant="danger"
-                target="_blank"
-                download>Cliquez ici
-                </Button>
+            <Form.Group  as={Col} controlId="exampleForm.SelectCustom" size="lg" custom>
+                  <Form.Label> Type de Payement  : </Form.Label>
+                    <Form.Control onChange={(e) => this.setState({type_payement: e.target.value})} as="select" custom>
+                    <option> Annuellement </option>
+                    <option>  Semestriellement </option>
+                    <option>  Trimestriellement  </option>
+                    <option> Mensuellement  </option>
+                    </Form.Control>
             </Form.Group>
-            </Form.Row>
+          </Form.Row>
+          
           
               <Button
               block

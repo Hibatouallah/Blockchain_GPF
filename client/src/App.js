@@ -183,8 +183,18 @@ class App extends Component {
                 </NavLink>
                 }
                 {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to="/listepayementclient" activeStyle>
+                    Mes Payements
+                </NavLink>
+                }
+                {localStorage.getItem('isclient') === 'true' &&
+                <NavLink to="/historiquepayementclient" activeStyle>
+                    Historique Payement
+                </NavLink>
+                }
+                {localStorage.getItem('isclient') === 'true' &&
                 <NavLink to="/notificationClient" activeStyle>
-                  
+
                     <Image  onClick={this.handlefonds} src={notification} roundedCircle />
                       <button className="badge">{localStorage.getItem('nbnotificationclient')}</button>
                       

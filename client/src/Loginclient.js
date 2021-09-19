@@ -130,6 +130,8 @@ class Loginclient extends Component {
                 var result = await client.methods.authentification(i,_email,_password).call()
                 console.log(result)
                 if(result == "welcome"){
+                    const cin = await client.methods.getcin(i).call()
+                    localStorage.setItem('cinclient', cin);
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('isclient', 'true');
                     this.props.history.push("/");

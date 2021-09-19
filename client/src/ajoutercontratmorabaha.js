@@ -30,10 +30,6 @@ class ajoutercontratmorabaha extends Component {
         delai_execution :"",
         assurancetakaful :"",
         duree_contrat :"",
-        montant_Mensuelle :"",
-        montant_trimestriel :"",
-        montant_semestriel :"",
-        montant_annuel :""
     }
   
     validateForm() {
@@ -46,11 +42,7 @@ class ajoutercontratmorabaha extends Component {
           this.state.delai_execution != " " &&
           this.state.montant_caution_provisoire != " " &&
           this.state.assurancetakaful!= " "  &&
-          this.state.duree_contrat != " " &&
-          this.state.montant_Mensuelle.length > 0 &&
-          this.state.montant_trimestriel.length > 0 &&
-          this.state.montant_semestriel != " " &&
-          this.state.montant_annuel != " " 
+          this.state.duree_contrat != " " 
         );
       }
    
@@ -125,7 +117,7 @@ class ajoutercontratmorabaha extends Component {
     }
 
     ajoutercontrat = async (e) => {
-        const {accounts,engagementClient,duree_contrat,montant_Mensuelle,montant_trimestriel,montant_semestriel,montant_annuel,assurancetakaful,montant_caution_provisoire,estimationpenalite,coutderevien,marge,prixvente,duree_ammortissement,delai_execution} = this.state
+        const {accounts,engagementClient,duree_contrat,assurancetakaful,estimationpenalite,coutderevien,marge,prixvente,duree_ammortissement} = this.state
         e.preventDefault()
      
         var _referenceprojet = localStorage.getItem('reference')
@@ -134,18 +126,12 @@ class ajoutercontratmorabaha extends Component {
         var _marge = marge
         var _prixvente= prixvente
         var _duree_ammortissement = duree_ammortissement
-        var _delai_execution = delai_execution
-        var _montant_caution_provisoire = montant_caution_provisoire
         var _assurancetakaful = assurancetakaful
         var _duree_contrat = duree_contrat
-        var _montant_Mensuelle = montant_Mensuelle
-        var _montant_trimestriel = montant_trimestriel
-        var _montant_semestriel = montant_semestriel
-        var _montant_annuel = montant_annuel
-        
-          var result = await engagementClient.methods.ajoutercontrat_morabaha_fonds(_referenceprojet,_estimationpenalite,_coutderevien,_marge,_prixvente,_duree_ammortissement,_montant_Mensuelle,_montant_trimestriel,_montant_semestriel,_montant_annuel,_assurancetakaful,_duree_contrat).send({from: accounts[0]})
-          alert("contrat Mourabaha ajouté")
-          this.props.history.push("/ListeContratsmorabaha");
+ 
+        var result = await engagementClient.methods.ajoutercontrat_morabaha_fonds(_referenceprojet,_estimationpenalite,_coutderevien,_marge,_prixvente,_duree_ammortissement,_assurancetakaful,_duree_contrat).send({from: accounts[0]})
+        alert("contrat Mourabaha ajouté")
+        this.props.history.push("/ListeContratsmorabaha");
    
           
     }
@@ -264,22 +250,12 @@ class ajoutercontratmorabaha extends Component {
             </FormGroup>
             </Form.Row>
             <Form.Row>
-        
             <FormGroup as={Col} controlId="assurancetakaful" bsSize="large">
               <FormLabel>Assurance takaful</FormLabel>
               <FormControl
                 value={this.state.assurancetakaful}
                 onChange={(e) => this.setState({assurancetakaful: e.target.value})}
                 type="number"
-              />
-            </FormGroup>
-
-            <FormGroup as={Col} controlId="montant_annuel" bsSize="large">
-              <FormLabel>Montant Annuel</FormLabel>
-              <FormControl
-                name = {this.state.montant_annuel}
-                onChange={(e) => this.setState({montant_annuel: e.target.value})}
-                type="text"
               />
             </FormGroup>
             </Form.Row>
@@ -292,34 +268,11 @@ class ajoutercontratmorabaha extends Component {
                 type="text"
               />
             </FormGroup>
-            <FormGroup as={Col} controlId="montant_Mensuelle" bsSize="large">
-              <FormLabel>Montant Mensuelle</FormLabel>
-              <FormControl
-                name = {this.state.montant_Mensuelle}
-                onChange={(e) => this.setState({montant_Mensuelle: e.target.value})}
-                type="text"
-              />
-            </FormGroup>
+            
             </Form.Row>
             <Form.Row>
-            <FormGroup as={Col} controlId="montant_trimestriel" bsSize="large">
-              <FormLabel>montant trimestriel</FormLabel>
-              <FormControl
-                name = {this.state.montant_trimestriel}
-                onChange={(e) => this.setState({montant_trimestriel: e.target.value})}
-                type="text"
-              />
-            </FormGroup>
-            <FormGroup as={Col} controlId="montant_semestriel" bsSize="large">
-              <FormLabel>Montant semestriel</FormLabel>
-              <FormControl
-                name = {this.state.montant_semestriel}
-                onChange={(e) => this.setState({montant_semestriel: e.target.value})}
-                type="text"
-              />
-            </FormGroup>
+            
             </Form.Row>
-          
               <Button
               block
               bsSize="large"

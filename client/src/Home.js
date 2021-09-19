@@ -2,11 +2,11 @@ import React, {Component,useRef} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card, Button,Container,Row,Col,ListGroup,ListGroupItem} from 'react-bootstrap';
+import { Card, Image,Container,Row,Col,ListGroup,ListGroupItem} from 'react-bootstrap';
 import { LinkContainer } from "react-router-bootstrap";
 import promoteuricon from './img/promoteuricon.png';
 import Slider from "./components/Slider";
-
+import Close from "./img/close.png"
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn, MDBRipple } from 'mdb-react-ui-kit';
 
 
@@ -54,12 +54,14 @@ componentDidMount = async () => {
         const local = await fonds.methods.getlocalisation(i).call()
         const img = await fonds.methods.getimage(i).call()
         const montant = await fonds.methods.getMontant_caution_provisoire(i).call()
+        const status = await fonds.methods.getstatus(i).call()
         const list =[{
           references: ref, 
           montant_caution_provisoire: montant, 
           localisation: local,
           type_projet :type,
-          image : img
+          image : img,
+          statusprojet : status
         }]
         this.setState({
           listeprojet:[...this.state.listeprojet,list] 
@@ -137,8 +139,19 @@ moredetails = (ref) => {
                       <p><b>Type du projet :</b>{list[0].type_projet}</p>
                       <p  class = "classp" ><b>{list[0].montant_caution_provisoire} DH</b></p>
                 </MDBCardText>
+                { list[0].statusprojet == "disponible" &&
                 <MDBBtn className = "classbtn" onClick={() => this.moredetails(list[0].references)}>Plus de detail</MDBBtn>
-              </MDBCardBody>
+                }
+                { list[0].statusprojet == "NonDisponible" &&
+                <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <Image src={Close}></Image></center>
+                }
+                </MDBCardBody>
             </MDBCard>
     
           </Col>

@@ -19,6 +19,7 @@ struct Promoteurengage :
     assurances_responsabilites_civile: String[100]
     assurance_rique_chantier:  String[100]
     assurance_accident_travail:  String[100]
+    contrat : String[300]
 
 struct Projetpromoteur:
     accountpromoteur: address
@@ -47,11 +48,6 @@ Listepromoteurengage : public(HashMap[uint256,Promoteurengage])
 Listecontratistisnaa : public(HashMap[uint256,Contratistisnaa])
 Listeprojetpromoteur : public(HashMap[uint256,Projetpromoteur])
 
-@external
-def payer(_account:address,montant : decimal):
-    mt : uint256 = 0
-    mt = convert(montant, uint256)
-    send(_account,mt)
 @external
 def ajouterprojetpromoteur(_accountpromoteur:address,_referencepromoteur : String[200]):
     self.Listeprojetpromoteur[self.indexlisteprojetpromoteur] = Projetpromoteur({
@@ -113,10 +109,15 @@ def ajouterpromoteurengage(_accountpromoteur:address,_referencepromoteur : Strin
         referencepromoteur : _referencepromoteur,
         assurances_responsabilites_civile: _assurances_responsabilites_civile,
         assurance_rique_chantier:  _assurance_rique_chantier,
-        assurance_accident_travail:  _assurance_accident_travail
+        assurance_accident_travail:  _assurance_accident_travail,
+        contrat : ""
     })
     self.indexlistepromoteurengage = self.indexlistepromoteurengage +1
-
+@external
+def modifiercontrat(nb:uint256,_contrat:String[300]):
+    self.Listepromoteurengage[nb].contrat = _contrat
+    
+    
 @external
 def modifierpromoteurengage(_nb:uint256,_accountpromoteur:address,_referencepromoteur : String[200],_assurances_responsabilites_civile: String[100],_assurance_rique_chantier: String[100],_assurance_accident_travail:  String[100]):
     self.Listepromoteurengage[_nb].accountpromoteur = _accountpromoteur
@@ -192,6 +193,7 @@ def getpayementlivraison(nb:uint256)-> String[10]:
      
 
 #Promoteur engage
+
 @external
 def getaccountpromoteur(nb:uint256)->address:
     return self.Listepromoteurengage[nb].accountpromoteur
@@ -207,7 +209,9 @@ def getassurance_rique_chantier(nb:uint256)->String[100]:
 @external
 def getassurance_accident_travail(nb:uint256)->String[100]:
     return self.Listepromoteurengage[nb].assurance_accident_travail
-
+@external
+def getcontrat(nb:uint256)->String[300]:
+    return self.Listepromoteurengage[nb].contrat
 
 #contrat isitisnaa
 

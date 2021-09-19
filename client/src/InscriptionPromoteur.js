@@ -321,6 +321,7 @@ class InscriptionPromoteur extends Component {
         var nbpromo = await promoteur.methods.listepromoteur().call()
         if(nbpromo == 0){
           var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+          alert("Compte est crée avec succés ,veuillez attendre la confirmation du compte par l'admin")
           this.props.history.push("/Loginpromoteur"); 
         }
         else{
@@ -333,6 +334,7 @@ class InscriptionPromoteur extends Component {
               }
               else{
                 var result = await promoteur.methods.inscription(_image,_nom_prenom,_activite,_identifiant_commun_entreprise,_identifiant_fiscal,_numero_rc,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+                alert("Compte est crée avec succés ,veuillez attendre la confirmation du compte par l'admin")
                 this.props.history.push("/Loginpromoteur"); 
               }
           }

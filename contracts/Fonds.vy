@@ -67,12 +67,15 @@ def ajouternotification(_message : String[30000]):
     })
     self.nbnotification = self.nbnotification + 1
 @external
+def  modifierstatus(_nb:uint256):
+    self.projets[_nb].status = "NonDisponible"
+
+@external
 def modifiernotification(_nb:uint256):
     self.notification[_nb].status = "Supprimer"
 @external
 def ajouterProjet(_nb_client: uint256,_mini_hopital:String[20],_supermarche:String[20],_hamam:String[20],_mini_mosque:String[20],_pharmacie:String[20],_reference : String[200],_image : String[200],_imagedet1 : String[200],_imagedet2 : String[200],_imagedet3 : String[200],_cout_estimation_travaux:String[30],_delai_execution: uint256,_montant_caution_provisoire: String[30],_duree_validite_offre: uint256,_mesures_securites_hygiene:String[200],_reception_provisoire_travaux: String[200],_cahier_prestations_techniques: String[200],_normes_mise_en_oeuvre: String[200],_localisation:String[1000],_descriptif:String[6000],_superficier:String[20],_type_projet: String[100],_nb_chambre: uint256,_terasse : String[20],_garage : String[20],_piscine : String[20],_etage : uint256,_jardin:String[20],_balcon:String[20])-> String[50]:
     existe : String[50] = " "
-
     self.projets[self.nbprojet] = Projet_infos({
         reference : _reference,
         image : _image,
@@ -204,6 +207,9 @@ def modifierProjet(_status:String[50],_nb_client:uint256,_mini_hopital:String[20
         })
     existe = "Modification effectuée avec succès"
     return existe
+@external
+def getwalletAddress() -> address :
+    return self.walletAddress
 
 @external
 def listeprojet() -> uint256 :

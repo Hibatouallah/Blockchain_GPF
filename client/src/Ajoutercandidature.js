@@ -216,6 +216,7 @@ class Ajoutercandidature extends Component {
       event.preventDefault()
       //Process file for IPFS ....
       const file = event.target.files[0]
+      console.log(file)
       const reader = new window.FileReader()
       reader.readAsArrayBuffer(file)
       reader.onloadend = () => {

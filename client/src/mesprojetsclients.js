@@ -2,10 +2,11 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
-import { Card,Button,Row,Image,Col,Table} from "react-bootstrap"
-import addicon from './img/add.png';
-import deleteicon from './img/delete.png';
-import updateicon from './img/update.png';
+import { Container,Row,Image,Col } from 'react-bootstrap';
+import { LinkContainer } from "react-router-bootstrap";
+import projet from './img/projet.png';
+
+
 
 class mesprojetsclients extends Component {
 
@@ -13,11 +14,9 @@ class mesprojetsclients extends Component {
         web3: null,
         accounts: null,
         chainid: null,
-        clients : null,
-        client : null,
-        nbclientengage:0,
-        nbclient : 0,
-        clientengage:[]        
+        fonds : null,
+        dureepayement:0 ,
+        liste:[]
     }
 
     componentDidMount = async () => {
@@ -46,42 +45,27 @@ class mesprojetsclients extends Component {
             accounts,
             chainid
         }, await this.loadInitialContracts)
-
-        // nb client engage
-        const engagementclients = await this.loadContract("dev", "EngagementClient")
-        var nb =  await engagementclients.methods.getlisteclientengage().call()
-        this.setState({nbclientengage:nb})
-
-        // nb client inscris
-        const client = await this.loadContract("dev", "Client")
-        var nbc =  await client.methods.listeclient().call()
-        this.setState({nbclient:nb})
-        var ci = ""
-        // trouver le cin du client actuel
-        for (var i=0; i < nbc; i++) {
-          const wallet = await client.methods.getwalletAddress(i).call()
-          if(accounts[0] == wallet){
-            ci = await client.methods.getcin(i).call()
-          }
-        }
-        console.log(ci)
-        for (var i=0; i < nb; i++) {
-            const cin = await engagementclients.methods.getcin(i).call()
-            if(cin == ci)
-            {
-                const ref = await engagementclients.methods.getreferenceclient(i).call() 
-                const type = await engagementclients.methods.gettypecontract(i).call()            
-                const list =[{
-                    cinclient : cin,
-                    reference: ref, 
-                    typecontrat: type
-                }]
+       // nb client engage
+       const engagementclients = await this.loadContract("dev", "EngagementClient")
+       var nb =  await engagementclients.methods.getlisteclientengage().call()
+     
+       for (var i=0; i < nb; i++) {
+           const cin = await engagementclients.methods.getcin(i).call()
+           if(cin == localStorage.getItem('cinclient'))
+           {
+               const ref = await engagementclients.methods.getreferenceclient(i).call()
+               const type = await engagementclients.methods.gettypecontract(i).call() 
+               const list = [{
+                    reference : ref,
+                    typecontrat : type
+               }]
                 this.setState({
-                    clientengage:[...this.state.clientengage,list] 
+                        liste:[...this.state.liste,list] 
                 })
-            }
-           
-        }
+
+           }
+          
+       }
     }
 
     loadInitialContracts = async () => {
@@ -98,7 +82,11 @@ class mesprojetsclients extends Component {
             fonds
         })
     }
- 
+    handlelistepayer= (ref,type)  =>{
+        localStorage.setItem("referenceprojetpayliste",ref)
+        localStorage.setItem("typecontrat",type)
+        this.props.history.push("/Listeclient_projet");
+      }
     loadContract = async (chain, contractName) => {
         // Load a deployed contract instance into a web3 contract object
         const {web3} = this.state
@@ -123,69 +111,30 @@ class mesprojetsclients extends Component {
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
-
-    handleChange = (ref)  =>{
-        localStorage.setItem('refprojet',ref);
-        this.props.history.push("/Confirmerclient");
-      }
     render() {
-    
-        const {
-            web3, accounts, chainid,fonds
-        } = this.state
-
-        if (!web3) {
-            return <div>Loading Web3, accounts, and contracts...</div>
-        }
-
-        if (isNaN(chainid) || chainid <= 42) {
-            return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
-        }
-
-        if (!fonds) {
-            return <div>Could not find a deployed contract. Check console for details.</div>
-        }
-
-        const isAccountsUnlocked = accounts ? accounts.length > 0 : false
-     
-        return (<div className="container">
-          {localStorage.getItem('isclient') != 'true' &&
-             this.props.history.push("/Loginclient")
-            }
-            {
-                !isAccountsUnlocked ?
-                    <p><strong>Connect with Metamask and refresh the page to
-                        be able to edit the storage fields.</strong>
-                    </p>
-                    : null
-            }
-           
-            <br/>
-           
-            <Table responsive >
-                <thead class="thead-dark">
-                    <tr>
-                    <th>Votre CIN</th>
-                    <th>Reference projet</th>
-                    <th>Type de contrat</th>
-                    </tr>
-                </thead>
-                <tbody>
-             
-                {this.state.clientengage.map((list) =>
-                    <tr>
-                           
-                            <td>{list[0].cinclient}</td>
-                            <td>{list[0].reference}</td>
-                            <td>{list[0].typecontrat}</td>
-                    </tr>
+   
+        return (
+            <div className="Login">
+          <Container>
+              <center>
+            <Row className="justify-content-md-center">
+                {this.state.liste.map(index => (
                     
-                )}
-                </tbody>
-            </Table>
-            
-        </div>)
+                    <Col xs={6} md={4}>
+                    <Image onClick={() => this.handlelistepayer(index[0].reference,index[0].typecontrat)} src={projet} roundedCircle />
+                    <br/>
+                    <h6>{index[0].reference}</h6>
+                    <br/> 
+                    </Col>
+                  
+                ))}
+             
+            </Row></center>
+            </Container>
+        </div>
+       )
     }
 }
 
 export default mesprojetsclients
+

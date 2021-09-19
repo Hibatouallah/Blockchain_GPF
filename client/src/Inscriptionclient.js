@@ -314,6 +314,7 @@ class Inscriptionclient extends Component {
         var nbclient = await client.methods.listeclient().call()
         if(nbclient == 0){
           var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
+          alert("Compte est crée avec succés ,veuillez attendre la confirmation du compte par l'admin")
           this.props.history.push("/Loginclient");
         }
         else{
@@ -325,6 +326,7 @@ class Inscriptionclient extends Component {
                 this.props.history.push("/Loginclient");
               }
               else{
+                alert("Compte est crée avec succés ,veuillez attendre la confirmation du compte par l'admin")
                 var result = await client.methods.inscription(_image,_nom_prenom,_cin,_date_naissance,_numtele,_adresse,_email,_password,accounts[0]).send({from: accounts[0]})
                 this.props.history.push("/Loginclient"); 
               }

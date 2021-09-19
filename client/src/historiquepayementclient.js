@@ -4,14 +4,14 @@ import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import { Container,Row,Col,Table,Image} from "react-bootstrap"
 import updateicon from './img/update.png'
-class ListeContratsmorabaha extends Component {
+
+class historiquepayementclient extends Component {
     state = {
         web3: null,
         accounts: null,
         chainid: null,
         EngagementClient : null,
-        nbcontrat:0,
-        listecontrat:[]        
+        liste:[]        
     }
 
     componentDidMount = async () => {
@@ -41,36 +41,28 @@ class ListeContratsmorabaha extends Component {
             chainid
         }, await this.loadInitialContracts)
         const EngagementClient = await this.loadContract("dev", "EngagementClient")
-        var nb =  await EngagementClient.methods.getListecontratmorabaha().call()
-        this.setState({nbcontrat:nb})
-  
+        const client = await this.loadContract("dev", "Client")
+        var nb =  await client.methods.getliste_payement_historique().call()
+        console.log(nb)
         for (var i=0; i < nb; i++) {
-            const cin = await EngagementClient.methods.getcinclient(i).call()
-            const reference = await EngagementClient.methods.getreferenceprojet(i).call()
-            const estimation = await EngagementClient.methods.getestimationpenalite(i).call()
-            const cout = await EngagementClient.methods.getcoutderevien(i).call()
-            const marg = await EngagementClient.methods.getmarge(i).call()
-            const prix = await EngagementClient.methods.getprixvente(i).call()
-            const duree_ammort = await EngagementClient.methods.getduree_ammortissement(i).call()
-            const assurancetakafu = await EngagementClient.methods.getassurancetakaful(i).call()
-            const duree_contra = await EngagementClient.methods.getduree_contrat(i).call()
-            
-            const list =[{
-                cinclient: cin, 
-                referenceprojet : reference,
-                estimationpenalite : estimation,
-                coutderevien : cout,
-                marge : marg,
-                prixvente: prix, 
-                duree_ammortissement: duree_ammort,
-                assurancetakaful: assurancetakafu,
-                duree_contrat: duree_contra
-            }]
-            this.setState({
-                listecontrat:[...this.state.listecontrat,list] 
-            })
-       
-        }
+            const cin = await client.methods.getcinclient_historique(i).call()
+            console.log(cin)
+            if(cin == localStorage.getItem('cinclient'))
+            {
+
+                const reference = await client.methods.getreference_historique(i).call()
+                const description = await client.methods.getdescription_historique(i).call()
+                console.log(reference)
+                console.log(description)
+                const list =[{
+                        descriptionistorique: description, 
+                        referenceprojet : reference
+                    }]
+                    this.setState({
+                        liste:[...this.state.liste,list] 
+                    })
+                }
+            }        
     }
 
     loadInitialContracts = async () => {
@@ -113,18 +105,7 @@ class ListeContratsmorabaha extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    ajouter = async event => {
-        this.props.history.push("/ajouterprojet");
-      }
-   
-    handleaddcontrats = async event => {
-        this.props.history.push("/ajouteravantcontrat");
-      }
 
-    handlemodifier = async(ref) => {
-        localStorage.setItem("referencemorabaha",ref)
-        this.props.history.push("/fondsmodifiercontratmourabaha");
-      }
 
     render() {
     
@@ -147,8 +128,8 @@ class ListeContratsmorabaha extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
      
         return (<div className="container">
-           {localStorage.getItem('isfonds') != 'true' &&
-             this.props.history.push("/Loginfonds")
+           {localStorage.getItem('isclient') != 'true' &&
+             this.props.history.push("/Loginclient")
             }
             {
                 !isAccountsUnlocked ?
@@ -159,43 +140,21 @@ class ListeContratsmorabaha extends Component {
             }
            
             <br/>
-            <Container>
-            <Row>
-                <Col xs={12} md={8}>
-                </Col>
-                <Col xs={6} md={4}>
-                </Col>
-            </Row>
-            </Container>
-          
-           <h3 class ='h3style'>Liste de contrats Morabaha </h3>
+         
             <Table responsive >
                 <thead class="thead-dark">
                     <tr>
-                    <th>Action</th>
                     <th>referenceprojet</th>
-                    <th>estimationpenalite</th>
-                    <th>coutderevien</th>
-                    <th>marge</th>
-                    <th>prixvente</th>
-                    <th>duree_ammortissement</th>
-                    <th>assurancetakaful</th>
-                    <th>duree_contrat</th>
+                    <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
              
-                {this.state.listecontrat.map((list) =>
+                {this.state.liste.map((list) =>
                     <tr>
-                            <td><Image onClick={() => this.handlemodifier(list[0].referenceprojet)} src={updateicon} roundedCircle /></td>
                             <td>{list[0].referenceprojet}</td>
-                            <td>{list[0].estimationpenalite}</td>
-                            <td>{list[0].coutderevien}</td>
-                            <td>{list[0].marge}</td>
-                            <td>{list[0].prixvente}</td>
-                            <td>{list[0].duree_ammortissement}</td>
-                            <td>{list[0].assurancetakaful}</td>
-                            <td>{list[0].duree_contrat}</td>
+                            <td>{list[0].descriptionistorique}</td>
+                            
                     </tr>
                     
                 )}
@@ -206,4 +165,4 @@ class ListeContratsmorabaha extends Component {
     }
 }
 
-export default ListeContratsmorabaha
+export default historiquepayementclient

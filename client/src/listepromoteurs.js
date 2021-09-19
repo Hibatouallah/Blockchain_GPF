@@ -16,6 +16,9 @@ class listepromoteurs extends Component {
       handlepromoteursengages = async event => {
         this.props.history.push("/listepromoteurengageme");
       }
+      handlepromoteurstotal = async event => {
+        this.props.history.push("/listepromoteurtotal");
+      }
     render() {
         return (
             <div className="Login">
@@ -31,6 +34,11 @@ class listepromoteurs extends Component {
                     <Image onClick={this.handlepromoteursengages}src={LISTE2} roundedCircle />
                     <br/><br/><br/>
                     <h4>&nbsp;les promoteurs engagés</h4>
+                </Col>
+                <Col xs={6} md={4}>
+                    <Image onClick={this.handlepromoteurstotal}src={LISTE1} roundedCircle />
+                    <br/><br/><br/>
+                    <h4>&nbsp;Tous les promoteurs </h4>
                 </Col>
                 
             </Row></center>

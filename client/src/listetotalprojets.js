@@ -52,56 +52,9 @@ class listetotalprojets extends Component {
         const engagementclient = await this.loadContract("dev","EngagementClient")
 
         var nb =  await fonds.methods.listeprojet().call()
-        var nbc = await engagementclient.methods.getlisteclientengage().call()
+   
         this.setState({nbprojet:nb})
-        this.setState({nbclientengage:nbc})
-        console.log(nbc)
-        var n = 0
-        for (var j = 0; j<nbc; j++){
-            this.state.listclient = []
-            var exisite = 'false'
-            const referenceclie = await engagementclient.methods.getreferenceclient(j).call()
-              this.state.listrefer.map((list) => {
-                    if(list[0].referenceclient == referenceclie){
-                        exisite = 'true'
-                    }
-                })
-            if(exisite =='false'){
-                n = n+1
-            for (var k = 0;k<nbc;k++){
-                console.log(this.state.listrefer)
-                const reference = await engagementclient.methods.getreferenceclient(k).call()
-                
-                console.log(exisite)
-                if(referenceclie == reference){
-                   
-                        const cinclient = await engagementclient.methods.getcin(k).call()
-                        const typecontra = await engagementclient.methods.gettypecontract(k).call()
-                        const listc = [{
-                            cin : cinclient,
-                            typecontract : typecontra,
-                            reference : referenceclie
-                        }]
-                        this.setState({
-                            listclient:[...this.state.listclient,listc] 
-                          })
-                    }
-                   
-                }
-           
-            const listref = [{
-                num :n,
-                referenceclient : referenceclie,
-                listeclients : this.state.listclient
-            }]
-            this.setState({
-                listrefer:[...this.state.listrefer,listref] 
-              })
-            
-            //console.log(this.state.listclient)
-        }
-            }
-
+     
         for (var i=0; i < nb; i++) {
             const ref = await fonds.methods.getRef(i).call()
             const cout = await fonds.methods.getCout_estimation_travaux(i).call()
@@ -352,29 +305,7 @@ class listetotalprojets extends Component {
                 )}
                 </tbody>
             </Table>
-            <br/>
-            <h3 class ='h3style'>Liste des clients engagés par projet</h3>
-            {this.state.listrefer.map((refli) => 
-            <>
-            <br/>
-             <h6 class='h6style'><b>Reference de projet N {refli[0].num} : {refli[0].referenceclient}</b></h6> 
-            <Table responsive >
-            <thead class="thead-dark">
-                    <tr>
-                    <th>cin_client</th> 
-                    <th>typecontract</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {refli[0].listeclients.map((list) =>
-                    <tr>
-                        <td>{list[0].cin}</td>
-                        <td>{list[0].typecontract}</td>     
-                    </tr>
-                )}
-                </tbody>
-            </Table>
-             </>)}
+           
         </div>)
     }
 }
